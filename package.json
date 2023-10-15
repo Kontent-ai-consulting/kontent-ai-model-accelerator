@@ -1,0 +1,63 @@
+{
+  "name": "xyz-accelerator",
+  "version": "0.0.0",
+  "description": "This utility enables easy export / import of project structure's in Kontent.ai",
+  "preferGlobal": true,
+  "private": false,
+  "bin": {
+    "kda": "./dist/cjs/lib/node/cli/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Enngage/kontent-ai-model-accelerator"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "Richard Sustek",
+  "main": "./dist/cjs/lib/index.js",
+  "module": "./dist/esm5/lib/index.js",
+  "es2015": "./dist/esm/lib/index.js",
+  "types": "./dist/cjs/lib/index.d.ts",
+  "directories": {},
+  "scripts": {
+    "test": "echo \"no global test configured\"",
+    "release": "npm run lint && standard-version",
+    "release:major": "npm run lint && standard-version --release-as major",
+    "release:major:beta": "npm run lint && standard-version --prerelease --release-as major",
+    "release:beta": "standard-version --prerelease",
+    "prepublishOnly": "npm run lint && npm run build:all",
+    "publish:beta": "npm publish --tag=next",
+    "build:es2015": "tsc --p tsconfig.es2015.json",
+    "build:es5": "tsc --p tsconfig.es5.json",
+    "build:cjs": "tsc --p tsconfig.cjs.json",
+    "build:all": "npm run build:cjs && npm run build:es5 && npm run build:es2015",
+    "test:all": "npm run build:all",
+    "test:export": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --max-http-header-size=80000000 --config=export-config.json ",
+    "test:import": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --config=restore-config.json",
+    "lint": "npx eslint lib"
+  },
+  "keywords": [
+    "Kontent.ai",
+    "Kontent.ai accelerator",
+    "Kontent.ai import",
+    "Kontent.ai export"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@kontent-ai/management-sdk": "5.3.0",
+    "colors": "1.4.0",
+    "yargs": "17.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "20.8.5",
+    "@types/yargs": "17.0.28",
+    "@typescript-eslint/eslint-plugin": "6.7.5",
+    "@typescript-eslint/parser": "6.7.5",
+    "eslint": "8.51.0",
+    "standard-version": "9.5.0",
+    "ts-node": "10.9.1",
+    "tslib": "2.6.2",
+    "typescript": "5.2.2"
+  }
+}
