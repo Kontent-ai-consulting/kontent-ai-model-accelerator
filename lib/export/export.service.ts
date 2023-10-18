@@ -46,7 +46,7 @@ export class ExportService {
             metadata: {
                 name: environment.name,
                 created: new Date(),
-                sdkVersion: version,
+                packageVersion: version,
             },
             data
         };

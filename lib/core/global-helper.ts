@@ -55,42 +55,6 @@ export function extractErrorMessage(error: any): string {
     return `Unknown error`;
 }
 
-export function getExtension(url: string): string | undefined {
-    return url.split('.').pop();
-}
-
-export function is404Error(error: any): boolean {
-    if (
-        error instanceof SharedModels.ContentManagementBaseKontentError &&
-        error.originalError?.response?.status === 404
-    ) {
-        return true;
-    }
-
-    return false;
-}
-
 export function handleError(error: any | SharedModels.ContentManagementBaseKontentError): void {
-    if (error instanceof SharedModels.ContentManagementBaseKontentError) {
-        throw {
-            Message: `Failed to import data with error: ${error.message}`,
-            ErrorCode: error.errorCode,
-            RequestId: error.requestId,
-            ValidationErrors: `${error.validationErrors.map((m) => m.message).join(', ')}`
-        };
-    }
-
     throw error;
-}
-
-export function extractAssetIdFromUrl(assetUrl: string): string {
-    const url = new URL(assetUrl);
-
-    const splitPaths = url.pathname.split('/');
-
-    if (splitPaths.length < 3) {
-        throw Error(`Invalid asset url '${assetUrl}' because asset id could not be determined`);
-    }
-
-    return splitPaths[2];
 }

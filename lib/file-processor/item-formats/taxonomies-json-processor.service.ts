@@ -1,19 +1,11 @@
 import { ITaxonomiesFormatService } from '../file-processor.models';
 import { TaxonomyModels } from '@kontent-ai/management-sdk';
-import { IJsonTaxonomy, IJsonTaxonomyTerm } from 'lib/core';
+import { IJsonTaxonomy } from '../../core';
 
 export class TaxonomiesJsonProcessorService implements ITaxonomiesFormatService {
     public readonly name: string = 'json';
     async transformAsync(taxonomies: TaxonomyModels.Taxonomy[]): Promise<IJsonTaxonomy[]> {
-        const mappedTaxonomies: IJsonTaxonomy[] = taxonomies.map((taxonomy) => {
-            const jsonType: IJsonTaxonomy = {
-                codename: taxonomy.codename,
-                name: taxonomy.name,
-                terms: this.mapTaxonomyTerms(taxonomy.terms)
-            };
-
-            return jsonType;
-        });
+        const mappedTaxonomies: IJsonTaxonomy[] = taxonomies.map((taxonomy) => this.mapTaxonomy(taxonomy));
         return mappedTaxonomies;
     }
 
@@ -21,15 +13,12 @@ export class TaxonomiesJsonProcessorService implements ITaxonomiesFormatService 
         return [];
     }
 
-    private mapTaxonomyTerms(terms: TaxonomyModels.Taxonomy[]): IJsonTaxonomyTerm[] {
-        return terms.map((term) => {
-            const jsonTerm: IJsonTaxonomyTerm = {
-                codename: term.codename,
-                name: term.name,
-                terms: this.mapTaxonomyTerms(term.terms)
-            };
-
-            return jsonTerm;
-        });
+    private mapTaxonomy(taxonomy: TaxonomyModels.Taxonomy): IJsonTaxonomy {
+        return {
+            name: taxonomy.name,
+            codename: taxonomy.codename,
+            externalId: taxonomy.id,
+            terms: taxonomy.terms.map((term) => this.mapTaxonomy(term))
+        };
     }
 }

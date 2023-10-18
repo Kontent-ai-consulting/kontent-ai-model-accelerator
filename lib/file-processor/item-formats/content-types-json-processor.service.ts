@@ -1,6 +1,10 @@
 import { IContentTypeFormatService } from '../file-processor.models';
-import { ContentTypeModels, ElementContracts } from '@kontent-ai/management-sdk';
-import { IJsonContentType, IJsonContentTypeElement, IJsonContentTypeGroup } from 'lib/core';
+import { ContentTypeElements, ContentTypeModels, ElementContracts } from '@kontent-ai/management-sdk';
+import {
+    IJsonContentType,
+    IJsonContentTypeElement,
+    IJsonContentTypeGroup,
+} from '../../core';
 
 export class ContentTypesJsonProcessorService implements IContentTypeFormatService {
     public readonly name: string = 'json';
@@ -10,11 +14,12 @@ export class ContentTypesJsonProcessorService implements IContentTypeFormatServi
             const jsonType: IJsonContentType = {
                 codename: contentType.codename,
                 name: contentType.name,
+                externalId: contentType.id,
                 contentGroups:
                     contentType.contentGroups?.map((contentGroup) => {
                         const jsonContentGroup: IJsonContentTypeGroup = {
-                            codename: contentGroup.codename,
-                            name: contentGroup.name
+                            name: contentGroup.name,
+                            external_id: contentGroup.id
                         };
 
                         return jsonContentGroup;
@@ -32,6 +37,6 @@ export class ContentTypesJsonProcessorService implements IContentTypeFormatServi
     }
 
     private getJsonElement(element: ElementContracts.IContentTypeElementContract): IJsonContentTypeElement {
-        return element;
+        return element as ContentTypeElements.IElementShared;
     }
 }

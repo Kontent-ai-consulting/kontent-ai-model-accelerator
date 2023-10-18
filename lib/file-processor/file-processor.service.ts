@@ -1,17 +1,8 @@
-import { IImportSource } from '../import';
-import { logAction } from '../core/log-helper';
 import { ContentTypesJsonProcessorService } from './item-formats/content-types-json-processor.service';
-import { IExportAllResult } from '../export';
-import { IJsonContentType, IJsonContentTypeSnippet, IJsonTaxonomy, IPackageMetadata, idTranslateHelper } from '../core';
+import { IExportAllResult, IExportJson } from '../export';
+import { idTranslateHelper } from '../core';
 import { ContentTypeSnippetsJsonProcessorService } from './item-formats/content-type-snippets-json-processor.service';
 import { TaxonomiesJsonProcessorService } from './item-formats/taxonomies-json-processor.service';
-
-interface IExportJson {
-    metadata: IPackageMetadata;
-    contentTypes: IJsonContentType[];
-    contentTypeSnippets: IJsonContentTypeSnippet[];
-    taxonomies: IJsonTaxonomy[];
-}
 
 export class FileProcessorService {
     private readonly contentTypeJsonProcessorService: ContentTypesJsonProcessorService =
@@ -23,16 +14,9 @@ export class FileProcessorService {
 
     constructor() {}
 
-    async extractJsonFileAsync(file: Buffer): Promise<IImportSource> {
-        logAction('info', 'Reading JSON file');
-
-        const result: IImportSource = {
-            contentTypes: await this.contentTypeJsonProcessorService.parseAsync(file.toString())
-        };
-
-        logAction('info', 'Reading JSON file completed');
-
-        return result;
+    async extractJsonFileAsync(file: Buffer): Promise<IExportJson> {
+        const exportJson: IExportJson = JSON.parse(file.toString());
+        return exportJson;
     }
 
     async mapExportToJsonAsync(exportData: IExportAllResult): Promise<string> {
@@ -46,7 +30,7 @@ export class FileProcessorService {
         };
 
         // replace id references with codenames
-        idTranslateHelper.replaceIdReferencesWithCodenames(json, exportData, {});
+        idTranslateHelper.replaceIdReferences(json, exportData, {});
 
         // clean unnecessary props
         idTranslateHelper.cleanUnnecessaryProperties(json);

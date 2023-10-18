@@ -1,4 +1,4 @@
-import { ElementContracts } from '@kontent-ai/management-sdk';
+import { ContentTypeElements } from '@kontent-ai/management-sdk';
 
 export interface ICliFileConfig {
     environmentId: string;
@@ -12,7 +12,7 @@ export type CliAction = 'export' | 'import';
 
 export interface IPackageMetadata {
     name: string;
-    sdkVersion: string;
+    packageVersion: string;
     created: Date;
 }
 
@@ -21,29 +21,26 @@ export interface IJsonContentType {
     name: string;
     contentGroups: IJsonContentTypeGroup[];
     elements: IJsonContentTypeElement[];
+    externalId: string;
 }
 
 export interface IJsonContentTypeSnippet {
     codename: string;
     name: string;
     elements: IJsonContentTypeElement[];
+    externalId: string;
 }
 
 export interface IJsonContentTypeGroup {
-    codename: string | undefined;
+    external_id: string | undefined;
     name: string;
 }
 
 export interface IJsonTaxonomy {
     codename: string;
     name: string;
-    terms: IJsonTaxonomyTerm[];
+    externalId?: string;
+    terms: IJsonTaxonomy[] | undefined;
 }
 
-export interface IJsonTaxonomyTerm {
-    name: string;
-    codename: string;
-    terms: IJsonTaxonomyTerm[];
-}
-
-export interface IJsonContentTypeElement extends ElementContracts.IContentTypeElementContract {}
+export interface IJsonContentTypeElement extends ContentTypeElements.IElementShared {}

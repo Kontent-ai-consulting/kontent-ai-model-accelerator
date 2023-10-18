@@ -1,13 +1,10 @@
-import { IExportAllResult } from 'lib/export';
-import { logAction } from './log-helper';
+import { IExportAllResult } from '../export';
 
 export interface IIdCodenameTranslationResult {
     [key: string]: string;
 }
 
 export class IdTranslateHelper {
-    private readonly defaultObjectId: string = '00000000-0000-0000-0000-000000000000';
-
     public cleanUnnecessaryProperties(data: any) {
         if (data) {
             if (Array.isArray(data)) {
@@ -17,11 +14,6 @@ export class IdTranslateHelper {
             } else {
                 for (const key of Object.keys(data)) {
                     const val = (data as any)[key];
-
-                    // Remove Id property
-                    if (key.toLowerCase() === 'id') {
-                        delete data.id;
-                    }
 
                     // Remove property with null value
                     if (val === null) {
@@ -41,7 +33,7 @@ export class IdTranslateHelper {
         }
     }
 
-    public replaceIdReferencesWithCodenames(
+    public replaceIdReferences(
         data: any,
         exportData: IExportAllResult,
         storedCodenames: IIdCodenameTranslationResult,
@@ -50,95 +42,28 @@ export class IdTranslateHelper {
         if (data) {
             if (Array.isArray(data)) {
                 for (const arrayItem of data) {
-                    this.replaceIdReferencesWithCodenames(arrayItem, exportData, storedCodenames, codenameForDefaultId);
+                    this.replaceIdReferences(arrayItem, exportData, storedCodenames, codenameForDefaultId);
                 }
             } else {
                 for (const key of Object.keys(data)) {
                     const val = (data as any)[key];
+
                     if (key.toLowerCase() === 'id') {
                         const id = (data as any).id;
-                        const codename = (data as any).codename;
 
-                        if (!codename) {
-                            let foundCodename: string | undefined;
-                            if (id.toLowerCase() === this.defaultObjectId.toLowerCase() && codenameForDefaultId) {
-                                foundCodename = codenameForDefaultId;
-                            } else {
-                                foundCodename = this.tryFindCodenameForId(id, exportData, storedCodenames);
-                            }
+                        // set external_id prop
+                        data.external_id = id;
 
-                            // replace id with codename
-                            if (foundCodename) {
-                                // remove id prop
-                                delete data.id;
-
-                                // set codename prop
-                                data.codename = foundCodename;
-                            } else {
-                                logAction('warning', `Could not find codename for object with id '${id}'`);
-                            }
-                        }
+                        // remove id prop
+                        delete data.id;
                     }
 
                     if (typeof val === 'object' && val !== null) {
-                        this.replaceIdReferencesWithCodenames(val, exportData, storedCodenames, codenameForDefaultId);
+                        this.replaceIdReferences(val, exportData, storedCodenames, codenameForDefaultId);
                     }
                 }
             }
         }
-    }
-
-    private tryFindCodenameForId(
-        findId: string,
-        data: any,
-        storedCodenames: IIdCodenameTranslationResult,
-        foundCodename?: string
-    ): string | undefined {
-        // try looking up codename in stored references
-        const storedCodename = storedCodenames[findId];
-
-        if (storedCodename) {
-            return storedCodename;
-        }
-
-        if (data) {
-            if (Array.isArray(data)) {
-                for (const arrayItem of data) {
-                    foundCodename = this.tryFindCodenameForId(findId, arrayItem, storedCodenames, foundCodename);
-                }
-            } else {
-                for (const key of Object.keys(data)) {
-                    const val = (data as any)[key];
-                    let candidateId: string | undefined;
-
-                    if (key.toLowerCase() === 'id') {
-                        candidateId = (data as any).id;
-                    }
-
-                    if (key.toLocaleLowerCase() === 'external_id') {
-                        candidateId = (data as any).external_id;
-                    }
-
-                    if (candidateId) {
-                        const codename = (data as any).codename;
-
-                        if (codename) {
-                            // store id -> codename mapping so that we don't have to always
-                            // search for it as its expensive operation
-                            storedCodenames[candidateId] = codename;
-                        }
-
-                        if (codename && candidateId === findId) {
-                            return codename;
-                        }
-                    }
-                    if (typeof val === 'object' && val !== null) {
-                        foundCodename = this.tryFindCodenameForId(findId, val, storedCodenames, foundCodename);
-                    }
-                }
-            }
-        }
-        return foundCodename;
     }
 }
 

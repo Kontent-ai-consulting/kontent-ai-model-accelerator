@@ -151,6 +151,5 @@ const getConfig = async () => {
 run()
     .then((m) => {})
     .catch((err) => {
-        console.error(err);
         logAction('error', extractErrorMessage(err));
     });

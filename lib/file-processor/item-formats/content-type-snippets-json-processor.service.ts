@@ -1,5 +1,5 @@
 import { IContentTypeSnippetsFormatService } from '../file-processor.models';
-import { ContentTypeSnippetModels, ElementContracts } from '@kontent-ai/management-sdk';
+import { ContentTypeElements, ContentTypeSnippetModels, ElementContracts } from '@kontent-ai/management-sdk';
 import { IJsonContentTypeElement, IJsonContentTypeSnippet } from '../../core';
 
 export class ContentTypeSnippetsJsonProcessorService implements IContentTypeSnippetsFormatService {
@@ -9,6 +9,7 @@ export class ContentTypeSnippetsJsonProcessorService implements IContentTypeSnip
             const jsonType: IJsonContentTypeSnippet = {
                 codename: contentTypeSnippet.codename,
                 name: contentTypeSnippet.name,
+                externalId: contentTypeSnippet.id,
                 elements: contentTypeSnippet._raw.elements.map((element) => this.getJsonElement(element))
             };
 
@@ -22,6 +23,6 @@ export class ContentTypeSnippetsJsonProcessorService implements IContentTypeSnip
     }
 
     private getJsonElement(element: ElementContracts.IContentTypeElementContract): IJsonContentTypeElement {
-        return element;
+        return element as ContentTypeElements.IElementShared;
     }
 }

@@ -1,6 +1,6 @@
 import { IRetryStrategyOptions } from '@kontent-ai/core-sdk';
 import { ContentTypeModels, ContentTypeSnippetModels, TaxonomyModels } from '@kontent-ai/management-sdk';
-import { IPackageMetadata } from 'lib/core';
+import { IJsonContentType, IJsonContentTypeSnippet, IJsonTaxonomy, IPackageMetadata } from 'lib/core';
 
 export interface IExportConfig {
     environmentId: string;
@@ -18,4 +18,11 @@ export interface IExportData {
 export interface IExportAllResult {
     data: IExportData;
     metadata: IPackageMetadata;
+}
+
+export interface IExportJson {
+    metadata: IPackageMetadata;
+    contentTypes: IJsonContentType[];
+    contentTypeSnippets: IJsonContentTypeSnippet[];
+    taxonomies: IJsonTaxonomy[];
 }
