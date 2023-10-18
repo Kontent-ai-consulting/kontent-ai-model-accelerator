@@ -2,7 +2,7 @@ import { IImportSource } from '../import';
 import { logAction } from '../core/log-helper';
 import { ContentTypesJsonProcessorService } from './item-formats/content-types-json-processor.service';
 import { IExportAllResult } from '../export';
-import { IJsonContentType, IJsonContentTypeSnippet, IJsonTaxonomy, IPackageMetadata } from '../core';
+import { IJsonContentType, IJsonContentTypeSnippet, IJsonTaxonomy, IPackageMetadata, idTranslateHelper } from '../core';
 import { ContentTypeSnippetsJsonProcessorService } from './item-formats/content-type-snippets-json-processor.service';
 import { TaxonomiesJsonProcessorService } from './item-formats/taxonomies-json-processor.service';
 
@@ -17,7 +17,7 @@ export class FileProcessorService {
     private readonly contentTypeJsonProcessorService: ContentTypesJsonProcessorService =
         new ContentTypesJsonProcessorService();
     private readonly contentTypeSnippetJsonProcessorService: ContentTypeSnippetsJsonProcessorService =
-        new ContentTypesJsonProcessorService();
+        new ContentTypeSnippetsJsonProcessorService();
     private readonly taxonomyJsonProcessorService: TaxonomiesJsonProcessorService =
         new TaxonomiesJsonProcessorService();
 
@@ -44,6 +44,12 @@ export class FileProcessorService {
             ),
             taxonomies: await this.taxonomyJsonProcessorService.transformAsync(exportData.data.taxonomies)
         };
+
+        // replace id references with codenames
+        idTranslateHelper.replaceIdReferencesWithCodenames(json, exportData, {});
+
+        // clean unnecessary props
+        idTranslateHelper.cleanUnnecessaryProperties(json);
 
         return JSON.stringify(json);
     }

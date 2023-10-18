@@ -1,6 +1,6 @@
 import { green, yellow, cyan, Color, red, magenta } from 'colors';
 
-export type LogActionType = 'error' | 'warning' | 'info' | 'exported' | 'readFs' | 'writeFs';
+export type LogActionType = 'error' | 'warning' | 'info' | 'fetch' | 'readFs' | 'writeFs' | 'export';
 
 export function logAction(
     action: LogActionType,

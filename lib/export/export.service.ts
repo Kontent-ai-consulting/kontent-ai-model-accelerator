@@ -25,16 +25,16 @@ export class ExportService {
     }
 
     async exportAllAsync(): Promise<IExportAllResult> {
-        printProjectAndEnvironmentInfoToConsoleAsync(this.managementClient);
+        const environment = await printProjectAndEnvironmentInfoToConsoleAsync(this.managementClient);
 
         const contentTypes = await this.getContentTypesAsync();
-        logAction('exported', `Exported '${contentTypes.length}' content types`);
+        logAction('fetch', `Loaded '${contentTypes.length}' content types`);
 
         const taxonomies = await this.getTaxonomiesAsync();
-        logAction('exported', `Exported '${taxonomies.length}' taxonomies`);
+        logAction('fetch', `Loaded '${taxonomies.length}' taxonomies`);
 
         const contentTypeSnippets = await this.getContentTypeSnippetsAsync();
-        logAction('exported', `Exported '${contentTypes.length}' content type snippets`);
+        logAction('fetch', `Loaded '${contentTypes.length}' content type snippets`);
 
         const data: IExportData = {
             contentTypes: contentTypes,
@@ -44,8 +44,9 @@ export class ExportService {
 
         return {
             metadata: {
-                version: version,
-                created: new Date()
+                name: environment.name,
+                created: new Date(),
+                sdkVersion: version,
             },
             data
         };

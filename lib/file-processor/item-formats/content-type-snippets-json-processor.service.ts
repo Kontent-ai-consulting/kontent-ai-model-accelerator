@@ -1,22 +1,27 @@
 import { IContentTypeSnippetsFormatService } from '../file-processor.models';
-import { ContentTypeModels } from '@kontent-ai/management-sdk';
-import { IJsonContentTypeSnippet } from '../../core';
+import { ContentTypeSnippetModels, ElementContracts } from '@kontent-ai/management-sdk';
+import { IJsonContentTypeElement, IJsonContentTypeSnippet } from '../../core';
 
 export class ContentTypeSnippetsJsonProcessorService implements IContentTypeSnippetsFormatService {
     public readonly name: string = 'json';
-    async transformAsync(types: ContentTypeModels.ContentType[]): Promise<IJsonContentTypeSnippet[]> {
-        const mappedTypes: IJsonContentTypeSnippet[] = types.map((m) => {
+    async transformAsync(types: ContentTypeSnippetModels.ContentTypeSnippet[]): Promise<IJsonContentTypeSnippet[]> {
+        const mappedSnippets: IJsonContentTypeSnippet[] = types.map((contentTypeSnippet) => {
             const jsonType: IJsonContentTypeSnippet = {
-                codename: m.codename,
-                name: m.name
+                codename: contentTypeSnippet.codename,
+                name: contentTypeSnippet.name,
+                elements: contentTypeSnippet._raw.elements.map((element) => this.getJsonElement(element))
             };
 
             return jsonType;
         });
-        return mappedTypes;
+        return mappedSnippets;
     }
 
     async parseAsync(text: string): Promise<IJsonContentTypeSnippet[]> {
         return [];
+    }
+
+    private getJsonElement(element: ElementContracts.IContentTypeElementContract): IJsonContentTypeElement {
+        return element;
     }
 }
