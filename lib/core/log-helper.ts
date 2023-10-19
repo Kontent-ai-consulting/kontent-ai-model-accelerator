@@ -28,7 +28,7 @@ export function logDebug(data: {
     } else if (data.type === 'Info') {
         typeColor = blue;
     } else if (data.type === 'Import') {
-        typeColor = yellow;
+        typeColor = cyan;
     } else if (data.type === 'Skip') {
         typeColor = magenta;
     } else if (data.type === 'Export') {

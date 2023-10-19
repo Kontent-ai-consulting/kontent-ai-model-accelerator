@@ -147,7 +147,7 @@ export class ImportService {
 
         logDebug({
             type: 'Fetch',
-            message: 'Fetched taxonomies',
+            message: 'Fetched existing taxonomies',
             partA: taxonomies.length.toString()
         });
 
