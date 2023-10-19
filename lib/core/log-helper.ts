@@ -10,6 +10,7 @@ export type LogType =
     | 'Export'
     | 'Import'
     | 'Skip'
+    | 'List'
     | 'Complete';
 
 export function logDebug(data: {

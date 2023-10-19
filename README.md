@@ -20,8 +20,9 @@ Install package globally:
 | ----------- | ----------- |
 | **environmentId**| Id of Kontent.ai environment **(required)**|
 | **apiKey**| Management API key **(required)**|
-| **action**| One of (`export` or `import`) **(required)**|
-| **filename**| Filename used to export or import|
+| **action**| One of (`export`, `remoteImport` or `fileImport`) **(required)**|
+| **filename**| Filename used to export or import |
+| **remoteProject**| Codename of the remote project (required for `remoteImport`)|
 
 ### Execution
 

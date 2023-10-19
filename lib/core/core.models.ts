@@ -1,14 +1,14 @@
 import { ContentTypeElements } from '@kontent-ai/management-sdk';
 
 export interface ICliFileConfig {
-    environmentId: string;
-    apiKey: string;
+    environmentId?: string;
+    apiKey?: string;
     action: CliAction;
     baseUrl?: string;
     filename?: string;
 }
 
-export type CliAction = 'export' | 'import';
+export type CliAction = 'export' | 'fileImport' | 'remoteImport' | 'list';
 
 export interface IPackageMetadata {
     name: string;
