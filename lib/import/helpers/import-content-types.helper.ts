@@ -1,5 +1,5 @@
 import { ContentTypeModels, ManagementClient } from '@kontent-ai/management-sdk';
-import { IJsonContentType, logAction } from '../../core';
+import { IJsonContentType, logDebug } from '../../core';
 import { ITargetEnvironmentData } from '../import.models';
 
 export class ImportContentTypesHelper {
@@ -13,9 +13,17 @@ export class ImportContentTypesHelper {
         for (const importContentType of data.importContentTypes) {
             if (data.existingData.contentTypes.find((m) => m.externalId === importContentType.externalId)) {
                 // skip content type
-                logAction('skip', 'Skipping content type because it already exists', importContentType.name);
+                logDebug({
+                    type: 'Skip',
+                    message: 'Skipping content type',
+                    partA: importContentType.name
+                });
             } else {
-                logAction('import', 'Import content type', importContentType.name);
+                logDebug({
+                    type: 'Import',
+                    message: 'Importing content type',
+                    partA: importContentType.name
+                });
                 contentTypes.push(
                     (
                         await data.managementClient

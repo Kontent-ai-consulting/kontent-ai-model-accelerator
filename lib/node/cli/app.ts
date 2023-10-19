@@ -7,7 +7,7 @@ import { ExportService } from '../../export';
 import { ImportService } from '../../import';
 import { FileProcessorService } from '../../file-processor';
 import { FileService } from '../file/file.service';
-import { logAction } from '../../core/log-helper';
+import { logDebug } from '../../core/log-helper';
 
 const argv = yargs(process.argv.slice(2))
     .example(
@@ -47,7 +47,10 @@ const exportAsync = async (config: ICliFileConfig) => {
 
     await fileService.writeFileAsync(filename, await fileProcessorService.mapExportToJsonAsync(exportedData));
 
-    logAction('info', `Completed`);
+     logDebug({
+         type: 'Complete',
+         message: `Export finished successfully`
+     });
 };
 
 const importAsync = async (config: ICliFileConfig) => {
@@ -65,7 +68,10 @@ const importAsync = async (config: ICliFileConfig) => {
     const extractedData = await fileProcessorService.extractJsonFileAsync(itemsFile);
     await importService.importAsync(extractedData);
 
-    logAction('info', `Completed`);
+    logDebug({
+        type: 'Complete',
+        message: `Import finished successfully`
+    });
 };
 
 const validateConfig = (config?: ICliFileConfig) => {
@@ -151,5 +157,8 @@ const getConfig = async () => {
 run()
     .then((m) => {})
     .catch((err) => {
-        logAction('error', extractErrorMessage(err));
+        logDebug({
+            type: 'Error',
+            message: extractErrorMessage(err)
+        });
     });

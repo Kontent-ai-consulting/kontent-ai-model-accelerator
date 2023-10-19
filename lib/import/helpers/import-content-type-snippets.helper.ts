@@ -1,5 +1,5 @@
 import { ContentTypeSnippetModels, ManagementClient } from '@kontent-ai/management-sdk';
-import { IJsonContentTypeSnippet, logAction } from '../../core';
+import { IJsonContentTypeSnippet, logDebug } from '../../core';
 import { ITargetEnvironmentData } from '../import.models';
 
 export class ImportContentTypeSnippetsHelper {
@@ -11,14 +11,20 @@ export class ImportContentTypeSnippetsHelper {
         const contentTypeSnippets: ContentTypeSnippetModels.ContentTypeSnippet[] = [];
 
         for (const importContentTypeSnippet of data.importContentTypeSnippets) {
-            if (data.existingData.contentTypeSnippets.find((m) => m.externalId === importContentTypeSnippet.externalId)) {
-                logAction(
-                    'skip',
-                    'Skipping content type snippet because it already exists',
-                    importContentTypeSnippet.name
-                );
+            if (
+                data.existingData.contentTypeSnippets.find((m) => m.externalId === importContentTypeSnippet.externalId)
+            ) {
+                logDebug({
+                    type: 'Skip',
+                    message: 'Skipping content type snippet',
+                    partA: importContentTypeSnippet.name
+                });
             } else {
-                logAction('import', 'Import content type snippet', importContentTypeSnippet.name);
+                logDebug({
+                    type: 'Import',
+                    message: 'Importing content type snippet',
+                    partA: importContentTypeSnippet.name
+                });
                 contentTypeSnippets.push(
                     (
                         await data.managementClient

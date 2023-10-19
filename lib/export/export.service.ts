@@ -1,7 +1,7 @@
 import { IExportAllResult, IExportConfig, IExportData } from './export.models';
 import { defaultRetryStrategy, defaultHttpService, printProjectAndEnvironmentInfoToConsoleAsync } from '../core';
 import { version } from '../../package.json';
-import { logAction } from '../core/log-helper';
+import { logDebug } from '../core/log-helper';
 import {
     ContentTypeModels,
     createManagementClient,
@@ -28,13 +28,25 @@ export class ExportService {
         const environment = await printProjectAndEnvironmentInfoToConsoleAsync(this.managementClient);
 
         const contentTypes = await this.getContentTypesAsync();
-        logAction('fetch', `Loaded '${contentTypes.length}' content types`);
+        logDebug({
+            type: 'Fetch',
+            message: 'Content types',
+            partA: contentTypes.length.toString()
+        });
 
         const taxonomies = await this.getTaxonomiesAsync();
-        logAction('fetch', `Loaded '${taxonomies.length}' taxonomies`);
+        logDebug({
+            type: 'Fetch',
+            message: 'Taxonomies',
+            partA: taxonomies.length.toString()
+        });
 
         const contentTypeSnippets = await this.getContentTypeSnippetsAsync();
-        logAction('fetch', `Loaded '${contentTypes.length}' content type snippets`);
+        logDebug({
+            type: 'Fetch',
+            message: 'Content type snippets',
+            partA: contentTypeSnippets.length.toString()
+        });
 
         const data: IExportData = {
             contentTypes: contentTypes,
@@ -46,7 +58,7 @@ export class ExportService {
             metadata: {
                 name: environment.name,
                 created: new Date(),
-                packageVersion: version,
+                packageVersion: version
             },
             data
         };

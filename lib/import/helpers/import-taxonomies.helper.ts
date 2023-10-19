@@ -1,5 +1,5 @@
 import { ManagementClient, TaxonomyModels } from '@kontent-ai/management-sdk';
-import { IJsonTaxonomy, logAction } from '../../core';
+import { IJsonTaxonomy, logDebug } from '../../core';
 import { ITargetEnvironmentData } from '../import.models';
 
 export class ImportTaxonomiesHelper {
@@ -12,9 +12,17 @@ export class ImportTaxonomiesHelper {
 
         for (const importTaxonomy of data.importTaxonomies) {
             if (data.existingData.taxonomies.find((m) => m.externalId === importTaxonomy.externalId)) {
-                logAction('skip', 'Skipping taxonomy because it already exists', importTaxonomy.name);
+                logDebug({
+                    type: 'Skip',
+                    message: 'Skipped taxonomy',
+                    partA: importTaxonomy.name
+                });
             } else {
-                logAction('import', 'Import taxonomy', importTaxonomy.name);
+                logDebug({
+                    type: 'Import',
+                    message: 'Importing taxonomy',
+                    partA: importTaxonomy.name
+                });
                 taxonomies.push(
                     (await data.managementClient.addTaxonomy().withData(this.mapTaxonomy(importTaxonomy)).toPromise())
                         .data

@@ -1,29 +1,42 @@
-import { green, yellow, cyan, Color, red, magenta } from 'colors';
+import { green, yellow, cyan, Color, red, bgYellow, black, magenta, bgBlack, blue } from 'colors';
 
-export type LogActionType = 'error' | 'warning' | 'info' | 'fetch' | 'readFs' | 'writeFs' | 'export' | 'import' | 'skip';
+export type LogType =
+    | 'Error'
+    | 'Warning'
+    | 'Info'
+    | 'Fetch'
+    | 'ReadFs'
+    | 'WriteFs'
+    | 'Export'
+    | 'Import'
+    | 'Skip'
+    | 'Complete';
 
-export function logAction(
-    action: LogActionType,
-    message: string,
-    info1?: string,
-    info2?: string,
-    info3?: string
-): void {
-    const infoMessages: string = `${info1 ? `[${yellow(info1)}]` : ''}${info2 ? `[${cyan(info2)}]` : ''}${
-        info3 ? `[${magenta(info3)}]` : ''
-    }`;
+export function logDebug(data: {
+    type: LogType;
+    message: string;
+    partA?: string;
+    partB?: string;
+    performance?: string;
+}): void {
+    let typeColor: Color = green;
+    let typeBgColor: Color = bgBlack;
 
-    if (action === 'info') {
-        console.log(`### ${message}${infoMessages.length ? ': ' : ''}${infoMessages}`);
-    } else {
-        let typeColor: Color = green;
-
-        if (action === 'error') {
-            typeColor = red;
-        } else if (action === 'warning') {
-            typeColor = red;
-        }
-
-        console.log(`[${typeColor(action)}]${infoMessages}${message ? ': ' : ''}${message}`);
+    if (data.type === 'Error') {
+        typeColor = red;
+    } else if (data.type === 'Info') {
+        typeColor = blue;
+    } else if (data.type === 'Import') {
+        typeColor = yellow;
+    } else if (data.type === 'Skip') {
+        typeColor = magenta;
+    } else if (data.type === 'Export') {
+        typeColor = yellow;
     }
+
+    console.log(
+        `[${typeBgColor(typeColor(data.type))}]${data.partA ? `[${yellow(data.partA)}]` : ''}${
+            data.partB ? `[${cyan(data.partB)}]` : ''
+        }${data.performance ? `[${bgYellow(black(data.performance))}]` : ''}: ${data.message}`
+    );
 }

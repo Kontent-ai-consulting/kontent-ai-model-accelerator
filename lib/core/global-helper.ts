@@ -1,7 +1,7 @@
 import { IManagementClient, EnvironmentModels, SharedModels } from '@kontent-ai/management-sdk';
 import { IRetryStrategyOptions } from '@kontent-ai/core-sdk';
 
-import { logAction } from './log-helper';
+import { logDebug } from './log-helper';
 
 import { HttpService } from '@kontent-ai/core-sdk';
 
@@ -33,8 +33,17 @@ export async function printProjectAndEnvironmentInfoToConsoleAsync(
     client: IManagementClient<any>
 ): Promise<EnvironmentModels.EnvironmentInformationModel> {
     const environmentInformation = (await client.environmentInformation().toPromise()).data;
-    logAction('info', 'Project', environmentInformation.project.name);
-    logAction('info', 'Environment', environmentInformation.project.environment);
+
+    logDebug({
+        type: 'Info',
+        message: 'Project',
+        partA: environmentInformation.project.name
+    });
+    logDebug({
+        type: 'Info',
+        message: 'Environment',
+        partA: environmentInformation.project.environment
+    });
 
     return environmentInformation.project;
 }

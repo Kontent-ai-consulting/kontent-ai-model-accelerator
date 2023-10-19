@@ -1,5 +1,5 @@
 import { promises } from 'fs';
-import { logAction } from '../../core/log-helper';
+import { logDebug } from '../../core/log-helper';
 
 export class FileService {
     constructor() {}
@@ -7,7 +7,11 @@ export class FileService {
     async loadFileAsync(filename: string): Promise<Buffer> {
         const filePath = this.getFilePath(filename);
 
-        logAction('readFs', filePath);
+        logDebug({
+            type: 'ReadFs',
+            message: `Reading file`,
+            partA: filePath
+        });
         const file = await promises.readFile(filePath);
 
         return file;
@@ -16,7 +20,11 @@ export class FileService {
     async writeFileAsync(fileNameWithoutExtension: string, content: any): Promise<void> {
         const filePath = this.getFilePath(fileNameWithoutExtension);
 
-        logAction('writeFs', filePath);
+        logDebug({
+            type: 'WriteFs',
+            message: `Writing to file`,
+            partA: filePath
+        });
         await promises.writeFile(filePath, content);
     }
 
