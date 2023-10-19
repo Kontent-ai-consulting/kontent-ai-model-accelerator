@@ -1,14 +1,8 @@
 import { IContentTypeFormatService } from '../file-processor.models';
 import { ContentTypeElements, ContentTypeModels, ElementContracts } from '@kontent-ai/management-sdk';
-import {
-    IJsonContentType,
-    IJsonContentTypeElement,
-    IJsonContentTypeGroup,
-} from '../../core';
+import { IJsonContentType, IJsonContentTypeElement, IJsonContentTypeGroup } from '../../core';
 
 export class ContentTypesJsonProcessorService implements IContentTypeFormatService {
-    public readonly name: string = 'json';
-
     async transformAsync(types: ContentTypeModels.ContentType[]): Promise<IJsonContentType[]> {
         const mappedTypes: IJsonContentType[] = types.map((contentType) => {
             const jsonType: IJsonContentType = {
@@ -30,10 +24,6 @@ export class ContentTypesJsonProcessorService implements IContentTypeFormatServi
             return jsonType;
         });
         return mappedTypes;
-    }
-
-    async parseAsync(text: string): Promise<IJsonContentType[]> {
-        return [];
     }
 
     private getJsonElement(element: ElementContracts.IContentTypeElementContract): IJsonContentTypeElement {

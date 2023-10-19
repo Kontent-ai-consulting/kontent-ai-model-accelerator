@@ -16,15 +16,12 @@ Install package globally:
 
 ### Configuration
 
-| Config            | Value                                                                                                                                                                                                                         |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **environmentId** | Id of Kontent.ai environment **(required)**                                                                                                                                                                                       |
-| **apiKey**        | Content Management Api key **(required)**                                                                                                                                                   |
-| **action**        | Action. Available options: `import` & `export` **(required)**            |                                                                                                                                                    |
-                                                                                                                                                              |
-| exportFilename     | Optional filename when exporting data                                                                                                                                                                        |
-| importFilename      | Name of the import file                                                                                                                                                                        |
-
+| Config | Value |
+| ----------- | ----------- |
+| **environmentId**| Id of Kontent.ai environment **(required)**|
+| **apiKey**| Management API key **(required)**|
+| **action**| One of (`export` or `import`) **(required)**|
+| **filename**| Filename used to export or import|
 
 ### Execution
 
@@ -34,7 +31,7 @@ Install package globally:
 
 Export:
 
-`kda --action=export --environmentId=xxx --exportFilename=items-backup.zip`
+`kda --action=export --environmentId=xxx --filename=items-backup.zip`
 
 To get some help you can use:
 

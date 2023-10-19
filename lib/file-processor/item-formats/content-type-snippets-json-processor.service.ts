@@ -3,7 +3,6 @@ import { ContentTypeElements, ContentTypeSnippetModels, ElementContracts } from 
 import { IJsonContentTypeElement, IJsonContentTypeSnippet } from '../../core';
 
 export class ContentTypeSnippetsJsonProcessorService implements IContentTypeSnippetsFormatService {
-    public readonly name: string = 'json';
     async transformAsync(types: ContentTypeSnippetModels.ContentTypeSnippet[]): Promise<IJsonContentTypeSnippet[]> {
         const mappedSnippets: IJsonContentTypeSnippet[] = types.map((contentTypeSnippet) => {
             const jsonType: IJsonContentTypeSnippet = {
@@ -16,10 +15,6 @@ export class ContentTypeSnippetsJsonProcessorService implements IContentTypeSnip
             return jsonType;
         });
         return mappedSnippets;
-    }
-
-    async parseAsync(text: string): Promise<IJsonContentTypeSnippet[]> {
-        return [];
     }
 
     private getJsonElement(element: ElementContracts.IContentTypeElementContract): IJsonContentTypeElement {

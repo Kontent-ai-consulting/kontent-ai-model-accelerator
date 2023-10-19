@@ -3,14 +3,9 @@ import { TaxonomyModels } from '@kontent-ai/management-sdk';
 import { IJsonTaxonomy } from '../../core';
 
 export class TaxonomiesJsonProcessorService implements ITaxonomiesFormatService {
-    public readonly name: string = 'json';
     async transformAsync(taxonomies: TaxonomyModels.Taxonomy[]): Promise<IJsonTaxonomy[]> {
         const mappedTaxonomies: IJsonTaxonomy[] = taxonomies.map((taxonomy) => this.mapTaxonomy(taxonomy));
         return mappedTaxonomies;
-    }
-
-    async parseAsync(text: string): Promise<IJsonTaxonomy[]> {
-        return [];
     }
 
     private mapTaxonomy(taxonomy: TaxonomyModels.Taxonomy): IJsonTaxonomy {
