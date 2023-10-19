@@ -21,7 +21,7 @@ export function logDebug(data: {
     performance?: string;
 }): void {
     let typeColor: Color = green;
-    let typeBgColor: Color = bgBlack;
+    const typeBgColor: Color = bgBlack;
 
     if (data.type === 'Error') {
         typeColor = red;

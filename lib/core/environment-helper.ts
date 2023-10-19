@@ -1,6 +1,6 @@
 export function getEnvironmentRequiredValue(variableName: string): string {
     // get value from environment variables first
-    let value = process.env[variableName];
+    const value = process.env[variableName];
 
     if (!value) {
         throw new Error(`Missing environment variable '${variableName}'`);
@@ -11,7 +11,7 @@ export function getEnvironmentRequiredValue(variableName: string): string {
 
 export function getEnvironmentOptionalValue(variableName: string): string | undefined {
     // get value from environment variables first
-    let value = process.env[variableName];
+    const value = process.env[variableName];
 
     if (!value) {
         return undefined;
