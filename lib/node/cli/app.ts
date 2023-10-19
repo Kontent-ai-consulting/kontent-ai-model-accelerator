@@ -42,8 +42,7 @@ const listRemoteProjectsAsync = async () => {
 
     logDebug({
         type: 'Fetch',
-        message: `Fetched remote projects`,
-        partA: acceleratorProjects.length.toString()
+        message: `Fetched '${acceleratorProjects.length}' remote projects`
     });
 
     for (const project of acceleratorProjects) {
