@@ -39,11 +39,11 @@ List available templates:
 
 Export:
 
-`kda --action=export --environmentId=xxx --apiKey=yyy --filename=my-export.zip`
+`kda --action=export --environmentId=xxx --apiKey=yyy --filename=my-export.json`
 
 Import from file:
 
-`kda --action=fileImport --environmentId=xxx --apiKey=yyy --filename=my-export.zip`
+`kda --action=fileImport --environmentId=xxx --apiKey=yyy --filename=my-export.json`
 
 Remote import:
 
