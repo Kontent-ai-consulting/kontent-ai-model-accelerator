@@ -16,16 +16,16 @@ Install package globally:
 
 ### Configuration
 
-| Config                  | Value                                                                    |
-| ----------------------- | ------------------------------------------------------------------------ |
-| **environmentId**       | Id of Kontent.ai environment **(required)**                              |
-| **apiKey**              | Management API key **(required)**                                        |
-| **action**              | One of (`export`, `list`, `remoteImport` or `fileImport`) **(required)** |
-| **filename**            | Filename used to export or import                                        |
-| **project**             | Codename of the remote project (required for `remoteImport`)             |
-| **contentTypes**        | May be used to import only selected content types                        |
-| **contentTypeSnippets** | May be used to import only selected content type snippets                |
-| **taxonomies**          | May be used to import only selected taxonomies                           |
+| Config                  | Value                                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| **environmentId**       | Id of Kontent.ai environment **(required)**                                                  |
+| **apiKey**              | Management API key **(required)**                                                            |
+| **action**              | One of (`export`, `list`, `remoteImport` or `fileImport`) **(required)**                     |
+| **filename**            | Filename used to export or import                                                            |
+| **project**             | Codename of the remote project (required for `remoteImport`)                                 |
+| **contentTypes**        | Comma separated list of codenames. May be used to import only selected content types         |
+| **contentTypeSnippets** | Comma separated list of codenames. May be used to import only selected content type snippets |
+| **taxonomies**          | Comma separated list of codenames. May be used to import only selected taxonomies            |
 
 ### Execution
 
@@ -51,7 +51,7 @@ Remote import:
 
 Remote import - import only parts of model:
 
-`kda --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona`
+`kda --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona,product_type`
 
 To get some help you can use:
 

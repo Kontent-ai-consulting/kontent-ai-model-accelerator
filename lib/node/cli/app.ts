@@ -196,6 +196,10 @@ const getConfig = async () => {
     const baseUrl: string | undefined = resolvedArgs.baseUrl as string | undefined;
     const filename: string | undefined = getDefaultFilename(resolvedArgs.filename as string | undefined);
 
+    const contentTypesRaw: string | undefined = resolvedArgs.contentTypes as string | undefined;
+    const contentTypeSnippetsRaw: string | undefined = resolvedArgs.contentTypeSnippets as string | undefined;
+    const taxonomiesRaw: string | undefined = resolvedArgs.taxonomies as string | undefined;
+
     if (!action) {
         throw Error(`No action was provided`);
     }
@@ -206,7 +210,25 @@ const getConfig = async () => {
         apiKey,
         environmentId,
         baseUrl: baseUrl,
-        filename: filename
+        filename: filename,
+        contentTypes: contentTypesRaw
+            ? contentTypesRaw
+                  .split(',')
+                  .filter((m) => m?.length)
+                  .map((m) => m.trim())
+            : [],
+        contentTypeSnippets: contentTypeSnippetsRaw
+            ? contentTypeSnippetsRaw
+                  .split(',')
+                  .filter((m) => m?.length)
+                  .map((m) => m.trim())
+            : [],
+        taxonomies: taxonomiesRaw
+            ? taxonomiesRaw
+                  .split(',')
+                  .filter((m) => m?.length)
+                  .map((m) => m.trim())
+            : []
     };
 
     return config;
