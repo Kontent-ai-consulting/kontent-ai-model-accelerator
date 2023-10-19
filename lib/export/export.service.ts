@@ -30,21 +30,19 @@ export class ExportService {
         const contentTypes = await this.getContentTypesAsync();
         logDebug({
             type: 'Fetch',
-            message: 'Content types',
-            partA: contentTypes.length.toString()
+            message: `Fetched '${contentTypes.length}' content types`
         });
 
         const taxonomies = await this.getTaxonomiesAsync();
         logDebug({
             type: 'Fetch',
-            message: 'Taxonomies',
-            partA: taxonomies.length.toString()
+            message: `Fetched '${taxonomies.length}' taxonomies`,
         });
 
         const contentTypeSnippets = await this.getContentTypeSnippetsAsync();
         logDebug({
             type: 'Fetch',
-            message: 'Content type snippets',
+            message: `Fetched '${contentTypeSnippets.length}' content type snippets`,
             partA: contentTypeSnippets.length.toString()
         });
 

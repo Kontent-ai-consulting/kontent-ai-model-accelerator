@@ -56,8 +56,7 @@ export class ImportService {
             if (dataToImport.taxonomies.length) {
                 logDebug({
                     type: 'Info',
-                    message: 'Preparing to import taxonomies',
-                    partA: dataToImport.taxonomies.length.toString()
+                    message: `Preparing to import '${dataToImport.taxonomies.length}' taxonomies`
                 });
                 const importedTaxonomies = await importTaxonomiesHelper.importTaxonomiesAsync({
                     managementClient: this.managementClient,
@@ -76,8 +75,7 @@ export class ImportService {
             if (dataToImport.contentTypeSnippets.length) {
                 logDebug({
                     type: 'Info',
-                    message: 'Preparing to import content type snippets',
-                    partA: dataToImport.contentTypeSnippets.length.toString()
+                    message: `Preparing to import '${dataToImport.contentTypeSnippets.length}' content type snippets`
                 });
 
                 const importedContentTypeSnippets =
@@ -98,8 +96,7 @@ export class ImportService {
             if (dataToImport.contentTypes.length) {
                 logDebug({
                     type: 'Info',
-                    message: 'Preparing to import content types',
-                    partA: dataToImport.contentTypes.length.toString()
+                    message: `Preparing to import '${dataToImport.contentTypes.length}' content types`
                 });
                 const importedContentTypes = await importContentTypesHelper.importContentTypesAsync({
                     managementClient: this.managementClient,
@@ -215,8 +212,7 @@ export class ImportService {
 
         logDebug({
             type: 'Fetch',
-            message: 'Fetched existing content types',
-            partA: contentTypes.length.toString()
+            message: `Fetched '${contentTypes.length}' existing content types`
         });
 
         const contentTypeSnippets: ContentTypeSnippetModels.ContentTypeSnippet[] = (
@@ -225,8 +221,7 @@ export class ImportService {
 
         logDebug({
             type: 'Fetch',
-            message: 'Fetched existing content type snippets',
-            partA: contentTypeSnippets.length.toString()
+            message: `Fetched '${contentTypeSnippets.length}' existing content type snippets`
         });
 
         const taxonomies: TaxonomyModels.Taxonomy[] = (await this.managementClient.listTaxonomies().toAllPromise()).data
@@ -234,8 +229,7 @@ export class ImportService {
 
         logDebug({
             type: 'Fetch',
-            message: 'Fetched existing taxonomies',
-            partA: taxonomies.length.toString()
+            message: `Fetched '${taxonomies.length}'  existing taxonomies`
         });
 
         return {
