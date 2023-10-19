@@ -14,7 +14,7 @@ export class ImportTaxonomiesHelper {
             if (data.existingData.taxonomies.find((m) => m.externalId === importTaxonomy.externalId)) {
                 logDebug({
                     type: 'Skip',
-                    message: 'Skipped taxonomy',
+                    message: 'Skipped taxonomy because it already exists',
                     partA: importTaxonomy.name
                 });
             } else {

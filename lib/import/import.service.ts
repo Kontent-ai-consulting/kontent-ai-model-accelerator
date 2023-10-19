@@ -56,7 +56,7 @@ export class ImportService {
             if (dataToImport.taxonomies.length) {
                 logDebug({
                     type: 'Info',
-                    message: 'Importing taxonomies',
+                    message: 'Preparing to import taxonomies',
                     partA: dataToImport.taxonomies.length.toString()
                 });
                 const importedTaxonomies = await importTaxonomiesHelper.importTaxonomiesAsync({
@@ -67,7 +67,7 @@ export class ImportService {
                 importedData.taxonomies.push(...importedTaxonomies);
             } else {
                 logDebug({
-                    type: 'Skip',
+                    type: 'Info',
                     message: 'There are no taxonomies to import'
                 });
             }
@@ -76,7 +76,7 @@ export class ImportService {
             if (dataToImport.contentTypeSnippets.length) {
                 logDebug({
                     type: 'Info',
-                    message: 'Importing content type snippets',
+                    message: 'Preparing to import content type snippets',
                     partA: dataToImport.contentTypeSnippets.length.toString()
                 });
 
@@ -89,7 +89,7 @@ export class ImportService {
                 importedData.contentTypeSnippets.push(...importedContentTypeSnippets);
             } else {
                 logDebug({
-                    type: 'Skip',
+                    type: 'Info',
                     message: 'There are no content type snippets to import'
                 });
             }
@@ -98,7 +98,7 @@ export class ImportService {
             if (dataToImport.contentTypes.length) {
                 logDebug({
                     type: 'Info',
-                    message: 'Importing content types',
+                    message: 'Preparing to import content types',
                     partA: dataToImport.contentTypes.length.toString()
                 });
                 const importedContentTypes = await importContentTypesHelper.importContentTypesAsync({
@@ -109,16 +109,11 @@ export class ImportService {
                 importedData.contentTypes.push(...importedContentTypes);
             } else {
                 logDebug({
-                    type: 'Skip',
+                    type: 'Info',
                     message: 'There are no content types to import'
                 });
             }
 
-            logDebug({
-                type: 'Info',
-                message: 'Importing taxonomies',
-                partA: dataToImport.taxonomies.length.toString()
-            });
             logDebug({
                 type: 'Info',
                 message: 'Import finished'

@@ -16,7 +16,7 @@ export class ImportContentTypeSnippetsHelper {
             ) {
                 logDebug({
                     type: 'Skip',
-                    message: 'Skipping content type snippet',
+                    message: 'Skipping content type snippet because it already exists',
                     partA: importContentTypeSnippet.name
                 });
             } else {

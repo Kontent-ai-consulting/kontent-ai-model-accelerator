@@ -15,7 +15,7 @@ export class ImportContentTypesHelper {
                 // skip content type
                 logDebug({
                     type: 'Skip',
-                    message: 'Skipping content type',
+                    message: 'Skipping content type because it already exists',
                     partA: importContentType.name
                 });
             } else {
