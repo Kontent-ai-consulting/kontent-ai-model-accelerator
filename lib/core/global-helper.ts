@@ -4,6 +4,7 @@ import { IRetryStrategyOptions } from '@kontent-ai/core-sdk';
 import { logDebug } from './log-helper';
 
 import { HttpService } from '@kontent-ai/core-sdk';
+import { DeliveryError } from '@kontent-ai/delivery-sdk';
 
 const rateExceededErrorCode: number = 10000;
 
@@ -13,6 +14,20 @@ export const defaultHttpService: HttpService = new HttpService({
 
 export function sleepAsync(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function is404Error(error: any): boolean {
+    if (
+        error instanceof SharedModels.ContentManagementBaseKontentError &&
+        error.originalError?.response?.status === 404
+    ) {
+        return true;
+    }
+    if (error instanceof DeliveryError && error.errorCode === 100) {
+        return true;
+    }
+
+    return false;
 }
 
 export const defaultRetryStrategy: IRetryStrategyOptions = {

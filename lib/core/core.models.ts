@@ -6,6 +6,7 @@ export interface ICliFileConfig {
     action: CliAction;
     baseUrl?: string;
     filename?: string;
+    remoteProject?: string;
 }
 
 export type CliAction = 'export' | 'fileImport' | 'remoteImport' | 'list';

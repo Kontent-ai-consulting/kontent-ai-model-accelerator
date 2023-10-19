@@ -32,7 +32,6 @@ const argv = yargs(process.argv.slice(2))
 
 const listRemoteProjectsAsync = async () => {
     const acceleratorDataService = getAcceleratorDataService();
-
     const acceleratorProjects = await acceleratorDataService.getAcceleratorProjectsAsync();
 
     logDebug({
@@ -82,7 +81,7 @@ const exportAsync = async (config: ICliFileConfig) => {
     });
 };
 
-const importAsync = async (config: ICliFileConfig) => {
+const importFromFile = async (config: ICliFileConfig) => {
     const filename: string = getDefaultFilename(config.filename);
     const fileProcessorService = new FileProcessorService();
     const fileService = new FileService();
@@ -110,15 +109,44 @@ const importAsync = async (config: ICliFileConfig) => {
     });
 };
 
+const importFromRemoteAsync = async (config: ICliFileConfig) => {
+    if (!config.environmentId) {
+        throw Error('Invalid environmentId');
+    }
+    if (!config.apiKey) {
+        throw Error('Invalid apiKey');
+    }
+    if (!config.remoteProject) {
+        throw Error('Invalid remoteProject');
+    }
+
+    const acceleratorDataService = getAcceleratorDataService();
+    const importService = new ImportService({
+        baseUrl: config.baseUrl,
+        environmentId: config.environmentId,
+        apiKey: config.apiKey
+    });
+
+    const project = await acceleratorDataService.getAcceleratorProjectByCodenameAsync(config.remoteProject);
+    const exportJson = await acceleratorDataService.extractJsonFromProjectAsync(project);
+
+    await importService.importAsync(exportJson);
+
+    logDebug({
+        type: 'Complete',
+        message: `Import finished successfully`
+    });
+};
+
 const run = async () => {
     const config = await getConfig();
 
     if (config.action === 'export') {
         await exportAsync(config);
     } else if (config.action === 'fileImport') {
-        await importAsync(config);
+        await importFromFile(config);
     } else if (config.action === 'remoteImport') {
-        await importAsync(config);
+        await importFromRemoteAsync(config);
     } else if (config.action === 'list') {
         await listRemoteProjectsAsync();
     } else {

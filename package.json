@@ -35,7 +35,8 @@
         "test:all": "npm run build:all",
         "test:list": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --max-http-header-size=80000000 --action=list ",
         "test:export": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --max-http-header-size=80000000 --config=export-config.json ",
-        "test:import": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --config=restore-config.json",
+        "test:import:file": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --config=import-file-config.json",
+        "test:import:remote": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --config=import-remote-config.json",
         "generate-kontent-models": "ts-node ./scripts/generate-kontent-models.ts",
         "lint": "npx eslint lib"
     },
