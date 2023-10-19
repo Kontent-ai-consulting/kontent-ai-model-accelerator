@@ -39,7 +39,7 @@ List available templates:
 
 Export:
 
-`kda --action=export --environmentId=xxx --filename=my-export.zip`
+`kda --action=export --environmentId=xxx --apiKey=yyy --filename=my-export.zip`
 
 Import from file:
 
