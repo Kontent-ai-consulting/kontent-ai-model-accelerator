@@ -33,6 +33,8 @@ export function logDebug(data: {
         typeColor = magenta;
     } else if (data.type === 'Export') {
         typeColor = yellow;
+    } else if (data.type === 'Warning') {
+        typeColor = red;
     }
 
     console.log(

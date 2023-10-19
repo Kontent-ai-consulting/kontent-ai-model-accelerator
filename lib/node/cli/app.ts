@@ -15,18 +15,24 @@ const argv = yargs(process.argv.slice(2))
         'kda --action=export --apiKey=xxx --environmentId=xxx',
         'Creates json export of content model from given environment'
     )
-    .alias('p', 'environmentId')
-    .describe('p', 'environmentId')
-    .alias('ak', 'apiKey')
-    .describe('ak', 'Management API Key')
+    .alias('e', 'environmentId')
+    .describe('e', 'environmentId')
+    .alias('k', 'apiKey')
+    .describe('k', 'Management API Key')
     .alias('a', 'action')
     .describe('a', 'Action to perform. One of: "export" | "removeImport" | "fileImport"')
     .alias('b', 'baseUrl')
     .describe('b', 'Custom base URL for Management API calls.')
     .alias('f', 'filename')
     .describe('f', 'Import / export filename')
-    .alias('rp', 'remoteProject')
-    .describe('rp', 'Codename of the remote project')
+    .alias('p', 'project')
+    .describe('p', 'Codename of the remote project')
+    .alias('ct', 'contentTypes')
+    .describe('ct', 'Used to import only selected of content types')
+    .alias('cts', 'contentTypeSnippets')
+    .describe('cts', 'Used to import only selected of content type snippets')
+    .alias('t', 'taxonomies')
+    .describe('t', 'Used to import only selected of taxonomies')
     .help('h')
     .alias('h', 'help').argv;
 
@@ -101,7 +107,12 @@ const importFromFile = async (config: ICliFileConfig) => {
 
     const itemsFile = await fileService.loadFileAsync(filename);
     const extractedData = await fileProcessorService.extractJsonFileAsync(itemsFile);
-    await importService.importAsync(extractedData);
+    await importService.importAsync({
+        exportJson: extractedData,
+        selectedContentTypes: config.contentTypes ?? [],
+        selectedContentTypeSnippets: config.contentTypeSnippets ?? [],
+        selectedTaxonomies: config.taxonomies ?? []
+    });
 
     logDebug({
         type: 'Complete',
@@ -127,10 +138,21 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
         apiKey: config.apiKey
     });
 
+    logDebug({
+        type: 'Fetch',
+        message: `Downloading template`,
+        partA: config.remoteProject
+    });
+
     const project = await acceleratorDataService.getAcceleratorProjectByCodenameAsync(config.remoteProject);
     const exportJson = await acceleratorDataService.extractJsonFromProjectAsync(project);
 
-    await importService.importAsync(exportJson);
+    await importService.importAsync({
+        exportJson: exportJson,
+        selectedContentTypes: config.contentTypes ?? [],
+        selectedContentTypeSnippets: config.contentTypeSnippets ?? [],
+        selectedTaxonomies: config.taxonomies ?? []
+    });
 
     logDebug({
         type: 'Complete',

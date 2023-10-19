@@ -16,13 +16,16 @@ Install package globally:
 
 ### Configuration
 
-| Config            | Value                                                                    |
-| ----------------- | ------------------------------------------------------------------------ |
-| **environmentId** | Id of Kontent.ai environment **(required)**                              |
-| **apiKey**        | Management API key **(required)**                                        |
-| **action**        | One of (`export`, `list`, `remoteImport` or `fileImport`) **(required)** |
-| **filename**      | Filename used to export or import                                        |
-| **remoteProject** | Codename of the remote project (required for `remoteImport`)             |
+| Config                  | Value                                                                    |
+| ----------------------- | ------------------------------------------------------------------------ |
+| **environmentId**       | Id of Kontent.ai environment **(required)**                              |
+| **apiKey**              | Management API key **(required)**                                        |
+| **action**              | One of (`export`, `list`, `remoteImport` or `fileImport`) **(required)** |
+| **filename**            | Filename used to export or import                                        |
+| **project**             | Codename of the remote project (required for `remoteImport`)             |
+| **contentTypes**        | May be used to import only selected content types                        |
+| **contentTypeSnippets** | May be used to import only selected content type snippets                |
+| **taxonomies**          | May be used to import only selected taxonomies                           |
 
 ### Execution
 
@@ -30,9 +33,25 @@ Install package globally:
 > a new environment based on your production and test the import first. If the import completes successfully, you may
 > swap environments or run it again on the production.
 
+List available templates:
+
+`kda --action=list`
+
 Export:
 
-`kda --action=export --environmentId=xxx --filename=items-backup.zip`
+`kda --action=export --environmentId=xxx --filename=my-export.zip`
+
+Import from file:
+
+`kda --action=fileImport --environmentId=xxx --apiKey=yyy --filename=my-export.zip`
+
+Remote import:
+
+`kda --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model`
+
+Remote import - import only parts of model:
+
+`kda --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona`
 
 To get some help you can use:
 
