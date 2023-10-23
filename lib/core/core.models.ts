@@ -6,7 +6,7 @@ export interface ICliFileConfig {
     action: CliAction;
     baseUrl?: string;
     filename?: string;
-    remoteProject?: string;
+    project?: string;
     contentTypes?: string[];
     taxonomies?: string[];
     contentTypeSnippets?: string[];

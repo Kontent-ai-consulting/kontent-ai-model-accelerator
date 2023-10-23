@@ -126,8 +126,8 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
     if (!config.apiKey) {
         throw Error('Invalid apiKey');
     }
-    if (!config.remoteProject) {
-        throw Error('Invalid remoteProject');
+    if (!config.project) {
+        throw Error('Invalid remote project');
     }
 
     const acceleratorDataService = getAcceleratorDataService();
@@ -140,10 +140,10 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
     logDebug({
         type: 'Fetch',
         message: `Downloading template`,
-        partA: config.remoteProject
+        partA: config.project
     });
 
-    const project = await acceleratorDataService.getAcceleratorProjectByCodenameAsync(config.remoteProject);
+    const project = await acceleratorDataService.getAcceleratorProjectByCodenameAsync(config.project);
     const exportJson = await acceleratorDataService.extractJsonFromProjectAsync(project);
 
     await importService.importAsync({
@@ -191,6 +191,7 @@ const getConfig = async () => {
 
     const action: CliAction | undefined = resolvedArgs.action as CliAction | undefined;
     const apiKey: string | undefined = resolvedArgs.apiKey as string | undefined;
+    const project: string | undefined = resolvedArgs.project as string | undefined;
     const environmentId: string | undefined = resolvedArgs.environmentId as string | undefined;
     const baseUrl: string | undefined = resolvedArgs.baseUrl as string | undefined;
     const filename: string | undefined = getDefaultFilename(resolvedArgs.filename as string | undefined);
@@ -208,6 +209,7 @@ const getConfig = async () => {
         action,
         apiKey,
         environmentId,
+        project: project,
         baseUrl: baseUrl,
         filename: filename,
         contentTypes: contentTypesRaw
