@@ -10,6 +10,7 @@ export interface ICliFileConfig {
     contentTypes?: string[];
     taxonomies?: string[];
     contentTypeSnippets?: string[];
+    debug?: boolean;
 }
 
 export type CliAction = 'export' | 'fileImport' | 'remoteImport' | 'list';

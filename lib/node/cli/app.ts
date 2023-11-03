@@ -33,6 +33,8 @@ const argv = yargs(process.argv.slice(2))
     .describe('cts', 'Used to import only selected of content type snippets')
     .alias('t', 'taxonomies')
     .describe('t', 'Used to import only selected of taxonomies')
+    .alias('d', 'debug')
+    .describe('d', 'Displays full error message on error')
     .help('h')
     .alias('h', 'help').argv;
 
@@ -146,6 +148,11 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
     const project = await acceleratorDataService.getAcceleratorProjectByCodenameAsync(config.project);
     const exportJson = await acceleratorDataService.extractJsonFromProjectAsync(project);
 
+    logDebug({
+        type: 'Fetch',
+        message: `Data for project '${exportJson.metadata.name}' fetched successfully`
+    });
+
     await importService.importAsync({
         exportJson: exportJson,
         selectedContentTypes: config.contentTypes ?? [],
@@ -199,6 +206,7 @@ const getConfig = async () => {
     const contentTypesRaw: string | undefined = resolvedArgs.contentTypes as string | undefined;
     const contentTypeSnippetsRaw: string | undefined = resolvedArgs.contentTypeSnippets as string | undefined;
     const taxonomiesRaw: string | undefined = resolvedArgs.taxonomies as string | undefined;
+    const debug: boolean | undefined = (resolvedArgs.debug as string | undefined)?.toLowerCase()?.trim() === 'true';
 
     if (!action) {
         throw Error(`No action was provided`);
@@ -209,6 +217,7 @@ const getConfig = async () => {
         action,
         apiKey,
         environmentId,
+        debug: debug ?? false,
         project: project,
         baseUrl: baseUrl,
         filename: filename,
@@ -237,7 +246,19 @@ const getConfig = async () => {
 
 run()
     .then((m) => {})
-    .catch((err) => {
+    .catch(async (err) => {
+        try {
+            const config = await getConfig();
+
+            if (config.debug) {
+                console.error(`Full error below:`);
+                console.error(err);
+            }
+        } catch (err) {
+            console.error(err);
+            console.error(`Failed to read config`);
+        }
+
         logDebug({
             type: 'Error',
             message: extractErrorMessage(err)

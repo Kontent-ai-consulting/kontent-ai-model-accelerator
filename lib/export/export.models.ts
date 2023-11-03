@@ -22,7 +22,7 @@ export interface IExportAllResult {
 
 export interface IExportJson {
     metadata: IPackageMetadata;
-    contentTypes: IJsonContentType[];
-    contentTypeSnippets: IJsonContentTypeSnippet[];
-    taxonomies: IJsonTaxonomy[];
+    contentTypes: IJsonContentType[] | undefined;
+    contentTypeSnippets: IJsonContentTypeSnippet[] | undefined;
+    taxonomies: IJsonTaxonomy[] | undefined;
 }

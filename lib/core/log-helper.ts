@@ -37,6 +37,10 @@ export function logDebug(data: {
         typeColor = red;
     }
 
+    if (data.type === 'Error') {
+        data.message = `${data.message} | To see full error run CLI with --debug=true`;
+    }
+
     console.log(
         `[${typeBgColor(typeColor(data.type))}]${data.partA ? `[${yellow(data.partA)}]` : ''}${
             data.partB ? `[${cyan(data.partB)}]` : ''

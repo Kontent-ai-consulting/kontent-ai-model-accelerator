@@ -137,10 +137,12 @@ export class ImportService {
 
         // filter content types
         if (data.selectedContentTypes.length === 0) {
-            contentTypesToImport.push(...data.exportJson.contentTypes);
+            if (data.exportJson.contentTypes?.length) {
+                contentTypesToImport.push(...data.exportJson.contentTypes);
+            }
         } else {
             for (const selectedContentTypeCodename of data.selectedContentTypes) {
-                const foundContentType = data.exportJson.contentTypes.find(
+                const foundContentType = data.exportJson.contentTypes?.find(
                     (m) => m.codename.toLowerCase() === selectedContentTypeCodename.toLocaleLowerCase()
                 );
 
@@ -158,10 +160,12 @@ export class ImportService {
 
         // filter content type snippets
         if (data.selectedContentTypeSnippets.length === 0) {
-            contentTypeSnippetsToImport.push(...data.exportJson.contentTypeSnippets);
+            if (data.exportJson.contentTypeSnippets?.length) {
+                contentTypeSnippetsToImport.push(...data.exportJson.contentTypeSnippets);
+            }
         } else {
             for (const selectedContentTypeSnippetCodename of data.selectedContentTypeSnippets) {
-                const foundContentTypeSnippet = data.exportJson.contentTypeSnippets.find(
+                const foundContentTypeSnippet = data.exportJson.contentTypeSnippets?.find(
                     (m) => m.codename.toLowerCase() === selectedContentTypeSnippetCodename.toLocaleLowerCase()
                 );
 
@@ -179,10 +183,12 @@ export class ImportService {
 
         // filter taxonomies
         if (data.selectedTaxonomies.length === 0) {
-            taxonomiesToImport.push(...data.exportJson.taxonomies);
+            if (data.exportJson.taxonomies?.length) {
+                taxonomiesToImport.push(...data.exportJson.taxonomies);
+            }
         } else {
             for (const selectedTaxonomyCodename of data.selectedTaxonomies) {
-                const foundTaxonomy = data.exportJson.taxonomies.find(
+                const foundTaxonomy = data.exportJson.taxonomies?.find(
                     (m) => m.codename.toLowerCase() === selectedTaxonomyCodename.toLocaleLowerCase()
                 );
 

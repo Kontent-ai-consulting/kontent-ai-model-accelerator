@@ -1,7 +1,7 @@
 import { IDeliveryClient } from '@kontent-ai/delivery-sdk';
 import { getAcceleratorDeliveryClient, httpService } from './deliveryClient';
 import { AcceleratorModel, contentTypes } from '../models/kontent-ai';
-import { is404Error } from '../core';
+import { is404Error, logDebug } from '../core';
 import { IExportJson } from 'lib/export';
 
 export function getAcceleratorDataService(): AcceleratorDataService {
@@ -47,6 +47,12 @@ export class AcceleratorDataService {
     private async getBinaryDataFromUrlAsync(url: string): Promise<any> {
         // temp fix for Kontent.ai Repository not validating url
         url = url.replace('#', '%23');
+
+        logDebug({
+            type: 'Fetch',
+            message: `Downloading Binary data`,
+            partA: url
+        });
 
         const response = await httpService.getAsync(
             {
