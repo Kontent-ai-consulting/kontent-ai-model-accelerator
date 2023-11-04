@@ -15,7 +15,14 @@ export class ImportContentTypesHelper {
                 // skip content type
                 logDebug({
                     type: 'Skip',
-                    message: 'Skipping content type because it already exists',
+                    message: `Content type with external id '${importContentType.externalId}' already exists`,
+                    partA: importContentType.name
+                });
+            } else if (data.existingData.contentTypes.find((m) => m.codename === importContentType.codename)) {
+                // skip content type
+                logDebug({
+                    type: 'Skip',
+                    message: `Content type with codename '${importContentType.codename}' already exists`,
                     partA: importContentType.name
                 });
             } else {

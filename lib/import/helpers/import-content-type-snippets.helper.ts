@@ -16,7 +16,15 @@ export class ImportContentTypeSnippetsHelper {
             ) {
                 logDebug({
                     type: 'Skip',
-                    message: 'Skipping content type snippet because it already exists',
+                    message: `Content type snippet with external id '${importContentTypeSnippet.externalId}' already exists`,
+                    partA: importContentTypeSnippet.name
+                });
+            } else if (
+                data.existingData.contentTypeSnippets.find((m) => m.codename === importContentTypeSnippet.codename)
+            ) {
+                logDebug({
+                    type: 'Skip',
+                    message: `Content type snippet with codename '${importContentTypeSnippet.codename}' already exists`,
                     partA: importContentTypeSnippet.name
                 });
             } else {
