@@ -1,6 +1,6 @@
 {
     "name": "xyz-accelerator",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "This utility enables easy export / import of project structure's in Kontent.ai",
     "preferGlobal": true,
     "private": false,
