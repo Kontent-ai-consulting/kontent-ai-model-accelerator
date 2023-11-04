@@ -26,6 +26,7 @@ Install package globally:
 | **contentTypes**        | Comma separated list of codenames. May be used to import only selected content types         |
 | **contentTypeSnippets** | Comma separated list of codenames. May be used to import only selected content type snippets |
 | **taxonomies**          | Comma separated list of codenames. May be used to import only selected taxonomies            |
+| **debug**               | If set to `true`, full error messages are shown in console log                               |
 
 ### Execution
 
