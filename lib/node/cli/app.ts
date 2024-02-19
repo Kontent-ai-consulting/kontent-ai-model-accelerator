@@ -39,19 +39,18 @@ const argv = yargs(process.argv.slice(2))
     .alias('h', 'help').argv;
 
 const listRemoteProjectsAsync = async () => {
-    const acceleratorDataService = getAcceleratorDataService();
-    const acceleratorProjects = await acceleratorDataService.getAcceleratorProjectsAsync();
+    const accelerators = await getAcceleratorDataService().getAllAcceleratorsAsync();
 
     logDebug({
         type: 'Fetch',
-        message: `Fetched '${acceleratorProjects.length}' remote projects`
+        message: `Fetched '${accelerators.length}' accelerator models`
     });
 
-    for (const project of acceleratorProjects) {
+    for (const project of accelerators) {
         logDebug({
             type: `List`,
-            message: `${project.system.name}`,
-            partA: project.system.codename
+            message: `${project.name}`,
+            partA: project.codename
         });
     }
 

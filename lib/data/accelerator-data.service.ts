@@ -1,45 +1,37 @@
-import { IDeliveryClient } from '@kontent-ai/delivery-sdk';
-import { getAcceleratorDeliveryClient, httpService } from './deliveryClient';
-import { AcceleratorModel, contentTypes } from '../models/kontent-ai';
-import { is404Error, logDebug } from '../core';
-import { IExportJson } from 'lib/export';
+import { defaultHttpService, getAllAcceleratorsUrl, logDebug } from '../core';
+import { HttpService } from '@kontent-ai/core-sdk';
+import { IExportJson } from '../export';
+import { IAccelerator, IAcceleratorResponse } from './accelerator-models';
 
 export function getAcceleratorDataService(): AcceleratorDataService {
     return new AcceleratorDataService();
 }
 
 export class AcceleratorDataService {
-    private readonly deliveryClient: IDeliveryClient = getAcceleratorDeliveryClient();
+    private readonly httpService: HttpService = defaultHttpService;
 
-    async getAcceleratorProjectsAsync(): Promise<AcceleratorModel[]> {
-        return (
-            await this.deliveryClient
-                .items<AcceleratorModel>()
-                .type(contentTypes.accelerator_model.codename)
-                .depthParameter(0)
-                .toAllPromise()
-        ).data.items;
+    async getAllAcceleratorsAsync(): Promise<IAccelerator[]> {
+        const response = await this.httpService.getAsync<IAcceleratorResponse>({
+            url: getAllAcceleratorsUrl
+        });
+
+        return response.data.data.accelerators;
     }
 
-    async getAcceleratorProjectByCodenameAsync(codename: string): Promise<AcceleratorModel> {
-        try {
-            const item = (await this.deliveryClient.item<AcceleratorModel>(codename).depthParameter(0).toPromise()).data
-                .item;
-
-            return item;
-        } catch (error) {
-            if (is404Error(error)) {
-                throw Error(`Could not find accelerator project with codename '${codename}'`);
-            }
-
-            throw error;
-        }
-    }
-
-    async extractJsonFromProjectAsync(acceleratorModel: AcceleratorModel): Promise<IExportJson> {
-        const assetBinaryData = await this.getBinaryDataFromUrlAsync(
-            acceleratorModel.elements.export_data.value[0].url
+    async getAcceleratorProjectByCodenameAsync(codename: string): Promise<IAccelerator> {
+        const item = (await this.getAllAcceleratorsAsync()).find(
+            (m) => m.codename.toLowerCase() === codename.toLowerCase()
         );
+
+        if (!item) {
+            throw Error(`Could not find accelerator project with codename '${codename}'`);
+        }
+
+        return item;
+    }
+
+    async extractJsonFromProjectAsync(accelerator: IAccelerator): Promise<IExportJson> {
+        const assetBinaryData = await this.getBinaryDataFromUrlAsync(accelerator.exportUrl);
 
         return JSON.parse(assetBinaryData);
     }
@@ -54,7 +46,7 @@ export class AcceleratorDataService {
             partA: url
         });
 
-        const response = await httpService.getAsync(
+        const response = await this.httpService.getAsync(
             {
                 url
             },
