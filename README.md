@@ -36,24 +36,24 @@ Install package globally:
 
 List available templates:
 
-`kda --action=list`
+`kontent-ai-accelerator --action=list`
 
 Export:
 
-`kda --action=export --environmentId=xxx --apiKey=yyy --filename=my-export.json`
+`kontent-ai-accelerator --action=export --environmentId=xxx --apiKey=yyy --filename=my-export.json`
 
 Import from file:
 
-`kda --action=fileImport --environmentId=xxx --apiKey=yyy --filename=my-export.json`
+`kontent-ai-accelerator --action=fileImport --environmentId=xxx --apiKey=yyy --filename=my-export.json`
 
 Remote import:
 
-`kda --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model`
+`kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model`
 
 Remote import - import only parts of model:
 
-`kda --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona,product_type`
+`kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona,product_type`
 
 To get some help you can use:
 
-`kda --help`
+`kontent-ai-accelerator --help`

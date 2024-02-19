@@ -5,7 +5,7 @@
     "preferGlobal": true,
     "private": false,
     "bin": {
-        "kda": "./dist/cjs/lib/node/cli/app.js"
+        "kontent-ai-accelerator": "./dist/cjs/lib/node/cli/app.js"
     },
     "repository": {
         "type": "git",
@@ -37,6 +37,7 @@
         "test:export": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --max-http-header-size=80000000 --config=export-config.json ",
         "test:import:file": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --config=import-file-config.json",
         "test:import:remote": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --config=import-remote-config.json",
+        "test:help": "npm run build:cjs && cd output && node --max-http-header-size 150000 ../dist/cjs/lib/node/cli/app --help",
         "generate-kontent-models": "ts-node ./scripts/generate-kontent-models.ts",
         "lint": "npx eslint lib"
     },
@@ -48,22 +49,22 @@
     ],
     "license": "MIT",
     "dependencies": {
-        "@kontent-ai/management-sdk": "5.3.0",
-        "@kontent-ai/delivery-sdk": "14.4.0",
+        "@kontent-ai/management-sdk": "5.8.2",
+        "@kontent-ai/delivery-sdk": "14.6.0",
         "@kontent-ai/model-generator": "6.5.0",
         "colors": "1.4.0",
         "yargs": "17.7.2"
     },
     "devDependencies": {
-        "dotenv": "16.3.1",
-        "@types/node": "20.8.7",
-        "@types/yargs": "17.0.29",
-        "@typescript-eslint/eslint-plugin": "6.8.0",
-        "@typescript-eslint/parser": "6.8.0",
-        "eslint": "8.51.0",
+        "dotenv": "16.4.4",
+        "@types/node": "20.11.19",
+        "@types/yargs": "17.0.32",
+        "@typescript-eslint/eslint-plugin": "7.0.1",
+        "@typescript-eslint/parser": "7.0.1",
+        "eslint": "8.56.0",
         "standard-version": "9.5.0",
-        "ts-node": "10.9.1",
+        "ts-node": "10.9.2",
         "tslib": "2.6.2",
-        "typescript": "5.2.2"
+        "typescript": "5.3.3"
     }
 }

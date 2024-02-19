@@ -1,4 +1,4 @@
-import { green, yellow, cyan, Color, red, bgYellow, black, magenta, bgBlack, blue } from 'colors';
+import { green, yellow, cyan, Color, red, bgYellow, black, magenta, bgBlack } from 'colors';
 
 export type LogType =
     | 'Error'
@@ -26,9 +26,9 @@ export function logDebug(data: {
     if (data.type === 'Error') {
         typeColor = red;
     } else if (data.type === 'Info') {
-        typeColor = blue;
-    } else if (data.type === 'Import') {
         typeColor = cyan;
+    } else if (data.type === 'Import') {
+        typeColor = yellow;
     } else if (data.type === 'Skip') {
         typeColor = magenta;
     } else if (data.type === 'Export') {
