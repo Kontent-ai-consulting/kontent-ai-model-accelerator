@@ -18,7 +18,7 @@ export class AcceleratorDataService {
         return response.data.data.accelerators;
     }
 
-    async getAcceleratorProjectByCodenameAsync(codename: string): Promise<IAccelerator> {
+    async getAcceleratorModelByCodenameAsync(codename: string): Promise<IAccelerator> {
         const item = (await this.getAllAcceleratorsAsync()).find(
             (m) => m.codename.toLowerCase() === codename.toLowerCase()
         );
@@ -30,7 +30,7 @@ export class AcceleratorDataService {
         return item;
     }
 
-    async extractJsonFromProjectAsync(accelerator: IAccelerator): Promise<IExportJson> {
+    async extractJsonFromModelAsync(accelerator: IAccelerator): Promise<IExportJson> {
         const assetBinaryData = await this.getBinaryDataFromUrlAsync(accelerator.exportUrl);
 
         return JSON.parse(assetBinaryData);

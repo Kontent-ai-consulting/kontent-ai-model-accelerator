@@ -1,6 +1,7 @@
 import { ManagementClient, TaxonomyModels } from '@kontent-ai/management-sdk';
 import { IJsonTaxonomy, logDebug } from '../../core';
 import { ITargetEnvironmentData } from '../import.models';
+import { guidHelper } from '../../helpers/index';
 
 export class ImportTaxonomiesHelper {
     async importTaxonomiesAsync(data: {
@@ -11,39 +12,74 @@ export class ImportTaxonomiesHelper {
         const taxonomies: TaxonomyModels.Taxonomy[] = [];
 
         for (const importTaxonomy of data.importTaxonomies) {
-            if (data.existingData.taxonomies.find((m) => m.externalId === importTaxonomy.externalId)) {
+            const importResult = this.prepareImport(importTaxonomy, data.existingData);
+
+            if (!importResult.canImport) {
                 logDebug({
                     type: 'Skip',
-                    message: `Taxonomy with external id '${importTaxonomy.externalId}' already exists`,
-                    partA: importTaxonomy.name
+                    message: importResult.message,
+                    partA: importTaxonomy.codename
                 });
-            } else if (data.existingData.taxonomies.find((m) => m.codename === importTaxonomy.codename)) {
-                logDebug({
-                    type: 'Skip',
-                    message: `Taxonomy with codename '${importTaxonomy.codename}' already exists`,
-                    partA: importTaxonomy.name
-                });
-            } else {
-                logDebug({
-                    type: 'Import',
-                    message: 'Importing taxonomy',
-                    partA: importTaxonomy.name
-                });
-                taxonomies.push(
-                    (await data.managementClient.addTaxonomy().withData(this.mapTaxonomy(importTaxonomy)).toPromise())
-                        .data
-                );
+
+                continue;
             }
+
+            logDebug({
+                type: 'Import',
+                message: importResult.message,
+                partA: importTaxonomy.codename
+            });
+
+            taxonomies.push(
+                (
+                    await data.managementClient
+                        .addTaxonomy()
+                        .withData(this.mapTaxonomy(importTaxonomy, importResult.newCodename))
+                        .toPromise()
+                ).data
+            );
         }
 
         return taxonomies;
     }
 
-    private mapTaxonomy(taxonomy: IJsonTaxonomy): TaxonomyModels.IAddTaxonomyRequestModel {
+    private prepareImport(
+        taxonomy: IJsonTaxonomy,
+        existingData: ITargetEnvironmentData
+    ): {
+        canImport: boolean;
+        message: string;
+        newCodename?: string;
+    } {
+        if (existingData.taxonomies.find((m) => m.externalId === taxonomy.externalId)) {
+            return {
+                canImport: false,
+                message: `Taxonomy with external id '${taxonomy.externalId}' already exists`
+            };
+        } else if (existingData.taxonomies.find((m) => m.codename === taxonomy.codename)) {
+            const newCodename: string = `${taxonomy.codename}_${guidHelper.shortGuid()}`;
+
+            return {
+                canImport: false,
+                newCodename: newCodename,
+                message: `Taxonomy with codename '${taxonomy.codename}' already exists. Using newly generated codename '${newCodename}' instead.`
+            };
+        }
+
+        return {
+            canImport: true,
+            message: 'Importing taxonomy'
+        };
+    }
+
+    private mapTaxonomy(
+        taxonomy: IJsonTaxonomy,
+        newTaxonomyCodename: string | undefined
+    ): TaxonomyModels.IAddTaxonomyRequestModel {
         return {
             name: taxonomy.name,
-            terms: taxonomy.terms ? taxonomy.terms.map((m) => this.mapTaxonomy(m)) ?? [] : [],
-            codename: taxonomy.codename,
+            terms: taxonomy.terms ? taxonomy.terms.map((m) => this.mapTaxonomy(m, undefined)) ?? [] : [],
+            codename: newTaxonomyCodename ?? taxonomy.codename,
             external_id: taxonomy.externalId
         };
     }

@@ -25,8 +25,8 @@ const argv = yargs(process.argv.slice(2))
     .describe('b', 'Custom base URL for Management API calls.')
     .alias('f', 'filename')
     .describe('f', 'Import / export filename')
-    .alias('p', 'project')
-    .describe('p', 'Codename of the remote project')
+    .alias('m', 'model')
+    .describe('m', 'Codename of the remote model')
     .alias('ct', 'contentTypes')
     .describe('ct', 'Used to import only selected of content types')
     .alias('cts', 'contentTypeSnippets')
@@ -38,7 +38,7 @@ const argv = yargs(process.argv.slice(2))
     .help('h')
     .alias('h', 'help').argv;
 
-const listRemoteProjectsAsync = async () => {
+const listRemoteAcceleratorsAsync = async () => {
     const accelerators = await getAcceleratorDataService().getAllAcceleratorsAsync();
 
     logDebug({
@@ -46,17 +46,17 @@ const listRemoteProjectsAsync = async () => {
         message: `Fetched '${accelerators.length}' accelerator models`
     });
 
-    for (const project of accelerators) {
+    for (const accelerator of accelerators) {
         logDebug({
-            type: `List`,
-            message: `${project.name}`,
-            partA: project.codename
+            type: null,
+            message: `${accelerator.name}`,
+            partA: accelerator.codename
         });
     }
 
     logDebug({
         type: 'Complete',
-        message: `All projects listed`
+        message: `All accelerator models listed`
     });
 };
 
@@ -127,8 +127,8 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
     if (!config.apiKey) {
         throw Error('Invalid apiKey');
     }
-    if (!config.project) {
-        throw Error('Invalid remote project');
+    if (!config.model) {
+        throw Error('Invalid remote model');
     }
 
     const acceleratorDataService = getAcceleratorDataService();
@@ -141,15 +141,15 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
     logDebug({
         type: 'Fetch',
         message: `Downloading template`,
-        partA: config.project
+        partA: config.model
     });
 
-    const project = await acceleratorDataService.getAcceleratorProjectByCodenameAsync(config.project);
-    const exportJson = await acceleratorDataService.extractJsonFromProjectAsync(project);
+    const model = await acceleratorDataService.getAcceleratorModelByCodenameAsync(config.model);
+    const exportJson = await acceleratorDataService.extractJsonFromModelAsync(model);
 
     logDebug({
         type: 'Fetch',
-        message: `Data for project '${exportJson.metadata.name}' fetched successfully`
+        message: `Data for model '${exportJson.metadata.name}' fetched successfully`
     });
 
     await importService.importAsync({
@@ -175,7 +175,7 @@ const run = async () => {
     } else if (config.action === 'remoteImport') {
         await importFromRemoteAsync(config);
     } else if (config.action === 'list') {
-        await listRemoteProjectsAsync();
+        await listRemoteAcceleratorsAsync();
     } else {
         throw Error(`Invalid action`);
     }
@@ -197,7 +197,7 @@ const getConfig = async () => {
 
     const action: CliAction | undefined = resolvedArgs.action as CliAction | undefined;
     const apiKey: string | undefined = resolvedArgs.apiKey as string | undefined;
-    const project: string | undefined = resolvedArgs.project as string | undefined;
+    const model: string | undefined = resolvedArgs.model as string | undefined;
     const environmentId: string | undefined = resolvedArgs.environmentId as string | undefined;
     const baseUrl: string | undefined = resolvedArgs.baseUrl as string | undefined;
     const filename: string | undefined = getDefaultFilename(resolvedArgs.filename as string | undefined);
@@ -217,7 +217,7 @@ const getConfig = async () => {
         apiKey,
         environmentId,
         debug: debug ?? false,
-        project: project,
+        model: model,
         baseUrl: baseUrl,
         filename: filename,
         contentTypes: contentTypesRaw
@@ -245,13 +245,12 @@ const getConfig = async () => {
 
 run()
     .then((m) => {})
-    .catch(async (err) => {
+    .catch(async (error) => {
         try {
             const config = await getConfig();
 
             if (config.debug) {
-                console.error(`Full error below:`);
-                console.error(err);
+                console.error(error);
             }
         } catch (err) {
             console.error(err);
@@ -260,6 +259,6 @@ run()
 
         logDebug({
             type: 'Error',
-            message: extractErrorMessage(err)
+            message: extractErrorMessage(error)
         });
     });

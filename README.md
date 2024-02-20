@@ -48,11 +48,11 @@ Import from file:
 
 Remote import:
 
-`kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model`
+`kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --model=advanced_model`
 
 Remote import - import only parts of model:
 
-`kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --project=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona,product_type`
+`kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --model=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona,product_type`
 
 To get some help you can use:
 

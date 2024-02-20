@@ -1,6 +1,7 @@
 import { ContentTypeModels, ManagementClient } from '@kontent-ai/management-sdk';
 import { IJsonContentType, logDebug } from '../../core';
 import { ITargetEnvironmentData } from '../import.models';
+import { guidHelper } from '../../helpers';
 
 export class ImportContentTypesHelper {
     async importContentTypesAsync(data: {
@@ -11,46 +12,71 @@ export class ImportContentTypesHelper {
         const contentTypes: ContentTypeModels.ContentType[] = [];
 
         for (const importContentType of data.importContentTypes) {
-            if (data.existingData.contentTypes.find((m) => m.externalId === importContentType.externalId)) {
-                // skip content type
+            const importResult = this.prepareImport(importContentType, data.existingData);
+
+            if (!importResult.canImport) {
                 logDebug({
                     type: 'Skip',
-                    message: `Content type with external id '${importContentType.externalId}' already exists`,
-                    partA: importContentType.name
+                    message: importResult.message,
+                    partA: importContentType.codename
                 });
-            } else if (data.existingData.contentTypes.find((m) => m.codename === importContentType.codename)) {
-                // skip content type
-                logDebug({
-                    type: 'Skip',
-                    message: `Content type with codename '${importContentType.codename}' already exists`,
-                    partA: importContentType.name
-                });
-            } else {
-                logDebug({
-                    type: 'Import',
-                    message: 'Importing content type',
-                    partA: importContentType.name
-                });
-                contentTypes.push(
-                    (
-                        await data.managementClient
-                            .addContentType()
-                            .withData((builder) => {
-                                return {
-                                    elements: importContentType.elements,
-                                    name: importContentType.name,
-                                    codename: importContentType.codename,
-                                    content_groups: importContentType.contentGroups,
-                                    external_id: importContentType.externalId
-                                };
-                            })
-                            .toPromise()
-                    ).data
-                );
+                continue;
             }
+
+            logDebug({
+                type: 'Import',
+                message: importResult.message,
+                partA: importContentType.codename
+            });
+
+            contentTypes.push(
+                (
+                    await data.managementClient
+                        .addContentType()
+                        .withData((builder) => {
+                            return {
+                                elements: importContentType.elements,
+                                name: importContentType.name,
+                                codename: importResult.newCodename ?? importContentType.codename,
+                                content_groups: importContentType.contentGroups,
+                                external_id: importContentType.externalId
+                            };
+                        })
+                        .toPromise()
+                ).data
+            );
         }
 
         return contentTypes;
+    }
+
+    private prepareImport(
+        type: IJsonContentType,
+        existingData: ITargetEnvironmentData
+    ): {
+        canImport: boolean;
+        message: string;
+        newCodename?: string;
+    } {
+        if (existingData.contentTypes.find((m) => m.externalId === type.externalId)) {
+            return {
+                canImport: false,
+                message: `Content type with external id '${type.externalId}' already exists`
+            };
+        } else if (existingData.contentTypes.find((m) => m.codename === type.codename)) {
+            const newCodename: string = `${type.codename}_${guidHelper.shortGuid()}`;
+
+            return {
+                canImport: false,
+                newCodename: newCodename,
+                message: `Content type with codename '${type.codename}' already exists. Using newly generated codename '${newCodename}' instead.`
+            };
+        }
+
+        return {
+            canImport: true,
+            message: 'Importing content type'
+        };
     }
 }
 

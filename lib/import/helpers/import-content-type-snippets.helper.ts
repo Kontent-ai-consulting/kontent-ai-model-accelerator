@@ -1,6 +1,7 @@
 import { ContentTypeSnippetModels, ManagementClient } from '@kontent-ai/management-sdk';
 import { IJsonContentTypeSnippet, logDebug } from '../../core';
 import { ITargetEnvironmentData } from '../import.models';
+import { guidHelper } from '../../helpers';
 
 export class ImportContentTypeSnippetsHelper {
     async importContentTypeSnipppetsAsync(data: {
@@ -11,47 +12,70 @@ export class ImportContentTypeSnippetsHelper {
         const contentTypeSnippets: ContentTypeSnippetModels.ContentTypeSnippet[] = [];
 
         for (const importContentTypeSnippet of data.importContentTypeSnippets) {
-            if (
-                data.existingData.contentTypeSnippets.find((m) => m.externalId === importContentTypeSnippet.externalId)
-            ) {
+            const importResult = this.prepareImport(importContentTypeSnippet, data.existingData);
+
+            if (!importResult.canImport) {
                 logDebug({
                     type: 'Skip',
-                    message: `Content type snippet with external id '${importContentTypeSnippet.externalId}' already exists`,
-                    partA: importContentTypeSnippet.name
+                    message: importResult.message,
+                    partA: importContentTypeSnippet.codename
                 });
-            } else if (
-                data.existingData.contentTypeSnippets.find((m) => m.codename === importContentTypeSnippet.codename)
-            ) {
-                logDebug({
-                    type: 'Skip',
-                    message: `Content type snippet with codename '${importContentTypeSnippet.codename}' already exists`,
-                    partA: importContentTypeSnippet.name
-                });
-            } else {
-                logDebug({
-                    type: 'Import',
-                    message: 'Importing content type snippet',
-                    partA: importContentTypeSnippet.name
-                });
-                contentTypeSnippets.push(
-                    (
-                        await data.managementClient
-                            .addContentTypeSnippet()
-                            .withData((builder) => {
-                                return {
-                                    elements: importContentTypeSnippet.elements,
-                                    name: importContentTypeSnippet.name,
-                                    codename: importContentTypeSnippet.codename,
-                                    external_id: importContentTypeSnippet.externalId
-                                };
-                            })
-                            .toPromise()
-                    ).data
-                );
+                continue;
             }
+
+            logDebug({
+                type: 'Import',
+                message: importResult.message,
+                partA: importContentTypeSnippet.codename
+            });
+
+            contentTypeSnippets.push(
+                (
+                    await data.managementClient
+                        .addContentTypeSnippet()
+                        .withData((builder) => {
+                            return {
+                                elements: importContentTypeSnippet.elements,
+                                name: importContentTypeSnippet.name,
+                                codename: importResult.newCodename ?? importContentTypeSnippet.codename,
+                                external_id: importContentTypeSnippet.externalId
+                            };
+                        })
+                        .toPromise()
+                ).data
+            );
         }
 
         return contentTypeSnippets;
+    }
+
+    private prepareImport(
+        snippet: IJsonContentTypeSnippet,
+        existingData: ITargetEnvironmentData
+    ): {
+        canImport: boolean;
+        message: string;
+        newCodename?: string;
+    } {
+        if (existingData.contentTypeSnippets.find((m) => m.externalId === snippet.externalId)) {
+            return {
+                canImport: false,
+                message: `Snippet with external id '${snippet.externalId}' already exists`
+            };
+        } else if (existingData.contentTypeSnippets.find((m) => m.codename === snippet.codename)) {
+            const newCodename: string = `${snippet.codename}_${guidHelper.shortGuid()}`;
+
+            return {
+                canImport: false,
+                newCodename: newCodename,
+                message: `Snippet with codename '${snippet.codename}' already exists. Using newly generated codename '${newCodename}' instead.`
+            };
+        }
+
+        return {
+            canImport: true,
+            message: 'Importing Snippet'
+        };
     }
 }
 

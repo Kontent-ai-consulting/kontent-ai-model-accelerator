@@ -10,8 +10,9 @@ export type LogType =
     | 'Export'
     | 'Import'
     | 'Skip'
-    | 'List'
-    | 'Complete';
+    | 'Model'
+    | 'Complete'
+    | null;
 
 export function logDebug(data: {
     type: LogType;
@@ -42,7 +43,7 @@ export function logDebug(data: {
     }
 
     console.log(
-        `[${typeBgColor(typeColor(data.type))}]${data.partA ? `[${yellow(data.partA)}]` : ''}${
+        `${data.type ? `[${typeBgColor(typeColor(data.type))}]` : ''}${data.partA ? `[${yellow(data.partA)}]` : ''}${
             data.partB ? `[${cyan(data.partB)}]` : ''
         }${data.performance ? `[${bgYellow(black(data.performance))}]` : ''}: ${data.message}`
     );
