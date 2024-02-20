@@ -2,10 +2,12 @@ import { IManagementClient, EnvironmentModels, SharedModels } from '@kontent-ai/
 import { IRetryStrategyOptions } from '@kontent-ai/core-sdk';
 import colors from 'colors';
 
-import { logDebug, logErrorAndExit } from './log-helper.js';
+import { exitProcess, logDebug, logErrorAndExit } from './log-helper.js';
 
 import { HttpService } from '@kontent-ai/core-sdk';
 import { DeliveryError } from '@kontent-ai/delivery-sdk';
+import { ImportService } from 'lib/index.js';
+import prompts from 'prompts';
 
 const rateExceededErrorCode: number = 10000;
 
@@ -120,4 +122,31 @@ export function handleError(error: any): void {
     logErrorAndExit({
         message: errorData.message
     });
+}
+
+export async function confirmImportAsync(data: { force: boolean; importService: ImportService }): Promise<void> {
+    const targetEnvironment = await data.importService.getEnvironmentInfoAsync();
+
+    if (data.force) {
+        logDebug({
+            type: 'Info',
+            message: `Skipping confirmation due to the use of force param`
+        });
+    } else {
+        const confirmed = await prompts({
+            type: 'confirm',
+            name: 'confirm',
+            message: `Are you sure to import models into ${colors.yellow(
+                targetEnvironment.environment
+            )} environment of project ${colors.cyan(targetEnvironment.name)}?`
+        });
+
+        if (!confirmed.confirm) {
+            logDebug({
+                type: 'Cancel',
+                message: `Confirmation refused. Exiting process.`
+            });
+            exitProcess();
+        }
+    }
 }

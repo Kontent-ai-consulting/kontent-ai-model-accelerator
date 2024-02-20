@@ -3,14 +3,13 @@ import { readFileSync } from 'fs';
 import colors from 'colors';
 import yargs from 'yargs';
 
-import { ICliFileConfig, CliAction, handleError } from '../../core/index.js';
+import { ICliFileConfig, CliAction, handleError, confirmImportAsync } from '../../core/index.js';
 import { ExportService } from '../../export/index.js';
 import { ImportService } from '../../import/index.js';
 import { FileProcessorService } from '../../file-processor/index.js';
 import { FileService } from '../file/file.service.js';
-import { exitProcess, logDebug } from '../../core/log-helper.js';
+import { logDebug } from '../../core/log-helper.js';
 import { getAcceleratorDataService } from '../../data/accelerator-data.service.js';
-import prompts from 'prompts';
 
 const argv = yargs(process.argv.slice(2))
     .example(
@@ -107,6 +106,11 @@ const importFromFile = async (config: ICliFileConfig) => {
         apiKey: config.apiKey
     });
 
+    await confirmImportAsync({
+        force: config.force,
+        importService: importService
+    });
+
     const itemsFile = await fileService.loadFileAsync(filename);
     const extractedData = await fileProcessorService.extractJsonFileAsync(itemsFile);
     await importService.importAsync({
@@ -140,30 +144,10 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
         apiKey: config.apiKey
     });
 
-    const targetEnvironment = await importService.getEnvironmentInfoAsync();
-
-    if (config.force) {
-        logDebug({
-            type: 'Info',
-            message: `Skipping confirmation due to the use of force param`
-        });
-    } else {
-        const confirmed = await prompts({
-            type: 'confirm',
-            name: 'confirm',
-            message: `Are you sure to import models into ${colors.yellow(
-                targetEnvironment.environment
-            )} environment of project ${colors.cyan(targetEnvironment.name)}?`
-        });
-
-        if (!confirmed.confirm) {
-            logDebug({
-                type: 'Cancel',
-                message: `Confirmation refused. Exiting process.`
-            });
-            exitProcess();
-        }
-    }
+    await confirmImportAsync({
+        force: config.force,
+        importService: importService
+    });
 
     logDebug({
         type: 'Fetch',
