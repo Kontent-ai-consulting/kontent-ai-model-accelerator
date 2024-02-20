@@ -44,7 +44,7 @@ kontent-ai-accelerator --help
 
 ```bash
 
-# List available templates
+# List default accelerator models
 kontent-ai-accelerator --action=list
 
 # Export existing project into a json
