@@ -42,26 +42,35 @@ kontent-ai-accelerator --help
 > **We do not recommended importing into a production environment directly** (without proper testing). Instead you
 > should first create a testing environment and run the script there to make sure everything works as you intended to.
 
-List available templates:
+```bash
 
-`kontent-ai-accelerator --action=list`
+# List available templates
+kontent-ai-accelerator --action=list
 
-Export:
+# Export existing project into a json
+kontent-ai-accelerator --action=export --environmentId=xxx --apiKey=yyy --filename=my-export.json
 
-`kontent-ai-accelerator --action=export --environmentId=xxx --apiKey=yyy --filename=my-export.json`
+# Import from file to an existing environment
+kontent-ai-accelerator --action=fileImport --environmentId=xxx --apiKey=yyy --filename=my-export.json
 
-Import from file:
+# Import from the default accelerator model
+kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --model=advanced_model
 
-`kontent-ai-accelerator --action=fileImport --environmentId=xxx --apiKey=yyy --filename=my-export.json`
+# Import only parts from the default accelerator model 
+kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --model=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona,product_type
 
-Remote import:
+# To get some help you can use:
+kontent-ai-accelerator --help
+```
 
-`kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --model=advanced_model`
 
-Remote import - import only parts of model:
 
-`kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --model=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona,product_type`
 
-To get some help you can use:
 
-`kontent-ai-accelerator --help`
+
+
+
+
+
+
+
