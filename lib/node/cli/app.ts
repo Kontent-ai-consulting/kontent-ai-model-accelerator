@@ -229,19 +229,19 @@ const getConfig = async () => {
         baseUrl: baseUrl,
         filename: filename,
         contentTypes: contentTypesRaw
-            ? contentTypesRaw
+            ? contentTypesRaw.trim()
                   .split(',')
                   .filter((m) => m?.length)
                   .map((m) => m.trim())
             : [],
         contentTypeSnippets: contentTypeSnippetsRaw
-            ? contentTypeSnippetsRaw
+            ? contentTypeSnippetsRaw.trim()
                   .split(',')
                   .filter((m) => m?.length)
                   .map((m) => m.trim())
             : [],
         taxonomies: taxonomiesRaw
-            ? taxonomiesRaw
+            ? taxonomiesRaw.trim()
                   .split(',')
                   .filter((m) => m?.length)
                   .map((m) => m.trim())

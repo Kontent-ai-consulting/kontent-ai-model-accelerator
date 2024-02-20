@@ -235,7 +235,7 @@ export class ImportService {
 
         logDebug({
             type: 'Fetch',
-            message: `Fetched '${colors.yellow(taxonomies.length.toString())}'  existing taxonomies`
+            message: `Fetched '${colors.yellow(taxonomies.length.toString())}' existing taxonomies`
         });
 
         return {
