@@ -1,12 +1,19 @@
 import { IManagementClient, EnvironmentModels, SharedModels } from '@kontent-ai/management-sdk';
 import { IRetryStrategyOptions } from '@kontent-ai/core-sdk';
+import colors from 'colors';
 
-import { logDebug } from './log-helper.js';
+import { logDebug, logErrorAndExit } from './log-helper.js';
 
 import { HttpService } from '@kontent-ai/core-sdk';
 import { DeliveryError } from '@kontent-ai/delivery-sdk';
 
 const rateExceededErrorCode: number = 10000;
+
+export interface IErrorData {
+    message: string;
+    requestData?: string;
+    requestUrl?: string;
+}
 
 export const defaultHttpService: HttpService = new HttpService({
     logErrorsToConsole: false
@@ -44,36 +51,73 @@ export const defaultRetryStrategy: IRetryStrategyOptions = {
     deltaBackoffMs: 1000
 };
 
-export async function printProjectAndEnvironmentInfoToConsoleAsync(
+export async function printEnvironmentInfoToConsoleAsync(
+    client: IManagementClient<any>
+): Promise<EnvironmentModels.EnvironmentInformationModel> {
+    const environmentInformation = await getEnvironmentInfoAsync(client);
+
+    logDebug({
+        type: 'Info',
+        message: `Using environment '${colors.yellow(environmentInformation.environment)}' from project '${colors.cyan(
+            environmentInformation.name
+        )}'`
+    });
+
+    return environmentInformation;
+}
+
+export async function getEnvironmentInfoAsync(
     client: IManagementClient<any>
 ): Promise<EnvironmentModels.EnvironmentInformationModel> {
     const environmentInformation = (await client.environmentInformation().toPromise()).data;
 
-    logDebug({
-        type: 'Info',
-        message: `Using accelerator model ${environmentInformation.project.environment}`,
-        partA: environmentInformation.project.name
-    });
-
     return environmentInformation.project;
 }
 
-export function extractErrorMessage(error: any): string {
+export function extractErrorData(error: any): IErrorData {
+    let message: string = `Unknown error`;
+    let requestUrl: string | undefined = undefined;
+    let requestData: string | undefined = undefined;
+
     if (error instanceof SharedModels.ContentManagementBaseKontentError) {
-        let message: string = `${error.message}`;
+        message = `${error.message}`;
+        requestUrl = error.originalError?.response?.config.url;
+        requestData = error.originalError?.response?.config.data;
 
         for (const validationError of error.validationErrors) {
             message += ` ${validationError.message}`;
         }
-        return message;
-    }
-    if (error instanceof Error) {
-        return error.message;
+    } else if (error instanceof Error) {
+        message = error.message;
     }
 
-    return `Unknown error`;
+    return {
+        message: message,
+        requestData: requestData,
+        requestUrl: requestUrl
+    };
 }
 
-export function handleError(error: any | SharedModels.ContentManagementBaseKontentError): void {
-    throw error;
+export function handleError(error: any): void {
+    const errorData = extractErrorData(error);
+
+    if (errorData.requestUrl) {
+        logDebug({
+            type: 'Error',
+            message: errorData.requestUrl,
+            partA: 'Request Url'
+        });
+    }
+
+    if (errorData.requestData) {
+        logDebug({
+            type: 'Error',
+            message: errorData.requestData,
+            partA: 'Request Data'
+        });
+    }
+
+    logErrorAndExit({
+        message: errorData.message
+    });
 }

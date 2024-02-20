@@ -3,13 +3,14 @@ import { readFileSync } from 'fs';
 import colors from 'colors';
 import yargs from 'yargs';
 
-import { ICliFileConfig, CliAction, extractErrorMessage } from '../../core/index.js';
+import { ICliFileConfig, CliAction, handleError } from '../../core/index.js';
 import { ExportService } from '../../export/index.js';
 import { ImportService } from '../../import/index.js';
 import { FileProcessorService } from '../../file-processor/index.js';
 import { FileService } from '../file/file.service.js';
-import { logDebug } from '../../core/log-helper.js';
+import { exitProcess, logDebug } from '../../core/log-helper.js';
 import { getAcceleratorDataService } from '../../data/accelerator-data.service.js';
+import prompts from 'prompts';
 
 const argv = yargs(process.argv.slice(2))
     .example(
@@ -139,6 +140,31 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
         apiKey: config.apiKey
     });
 
+    const targetEnvironment = await importService.getEnvironmentInfoAsync();
+
+    if (config.force) {
+        logDebug({
+            type: 'Info',
+            message: `Skipping confirmation due to the use of force param`
+        });
+    } else {
+        const confirmed = await prompts({
+            type: 'confirm',
+            name: 'confirm',
+            message: `Are you sure to import models into ${colors.yellow(
+                targetEnvironment.environment
+            )} environment of project ${colors.cyan(targetEnvironment.name)}?`
+        });
+
+        if (!confirmed.confirm) {
+            logDebug({
+                type: 'Cancel',
+                message: `Confirmation refused. Exiting process.`
+            });
+            exitProcess();
+        }
+    }
+
     logDebug({
         type: 'Fetch',
         message: `Downloading template`,
@@ -151,8 +177,10 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
     if (exportJson.metadata.environment?.length) {
         logDebug({
             type: 'Fetch',
-            message: `Data for accelerator model '${colors.yellow(exportJson.metadata.environment)}' fetched successfully`
-    });
+            message: `Data for accelerator model '${colors.yellow(
+                exportJson.metadata.environment
+            )}' fetched successfully`
+        });
     } else {
         logDebug({
             type: 'Fetch',
@@ -213,7 +241,8 @@ const getConfig = async () => {
     const contentTypesRaw: string | undefined = resolvedArgs.contentTypes as string | undefined;
     const contentTypeSnippetsRaw: string | undefined = resolvedArgs.contentTypeSnippets as string | undefined;
     const taxonomiesRaw: string | undefined = resolvedArgs.taxonomies as string | undefined;
-    const debug: boolean | undefined = (resolvedArgs.debug as string | undefined)?.toLowerCase()?.trim() === 'true';
+    const debug: boolean = (resolvedArgs.debug as string | undefined)?.toLowerCase()?.trim() === 'true';
+    const force: boolean = (resolvedArgs.force as string | undefined)?.toLowerCase()?.trim() === 'true';
 
     if (!action) {
         throw Error(`No action was provided`);
@@ -224,24 +253,28 @@ const getConfig = async () => {
         action,
         apiKey,
         environmentId,
-        debug: debug ?? false,
+        debug: debug,
+        force: force,
         model: model,
         baseUrl: baseUrl,
         filename: filename,
         contentTypes: contentTypesRaw
-            ? contentTypesRaw.trim()
+            ? contentTypesRaw
+                  .trim()
                   .split(',')
                   .filter((m) => m?.length)
                   .map((m) => m.trim())
             : [],
         contentTypeSnippets: contentTypeSnippetsRaw
-            ? contentTypeSnippetsRaw.trim()
+            ? contentTypeSnippetsRaw
+                  .trim()
                   .split(',')
                   .filter((m) => m?.length)
                   .map((m) => m.trim())
             : [],
         taxonomies: taxonomiesRaw
-            ? taxonomiesRaw.trim()
+            ? taxonomiesRaw
+                  .trim()
                   .split(',')
                   .filter((m) => m?.length)
                   .map((m) => m.trim())
@@ -260,13 +293,7 @@ run()
             if (config.debug) {
                 console.error(error);
             }
-        } catch (err) {
-            console.error(err);
-            console.error(`Failed to read config`);
+        } catch (error) {
+            handleError(error);
         }
-
-        logDebug({
-            type: 'Error',
-            message: extractErrorMessage(error)
-        });
     });

@@ -2,17 +2,18 @@ import {
     ContentTypeModels,
     ManagementClient,
     TaxonomyModels,
-    ContentTypeSnippetModels
+    ContentTypeSnippetModels,
+    EnvironmentModels
 } from '@kontent-ai/management-sdk';
 import colors from 'colors';
 import {
     handleError,
     defaultRetryStrategy,
-    printProjectAndEnvironmentInfoToConsoleAsync,
     defaultHttpService,
     IJsonContentType,
     IJsonContentTypeSnippet,
-    IJsonTaxonomy
+    IJsonTaxonomy,
+    getEnvironmentInfoAsync
 } from '../core/index.js';
 import { IImportConfig, IImportedData, ITargetEnvironmentData } from './import.models.js';
 import { logDebug } from '../core/log-helper.js';
@@ -34,6 +35,10 @@ export class ImportService {
         });
     }
 
+    getEnvironmentInfoAsync(): Promise<EnvironmentModels.EnvironmentInformationModel> {
+        return getEnvironmentInfoAsync(this.managementClient);
+    }
+
     async importAsync(data: {
         exportJson: IExportJson;
         selectedContentTypes: string[];
@@ -47,8 +52,6 @@ export class ImportService {
         };
 
         const dataToImport = this.getDataToImport(data);
-
-        await printProjectAndEnvironmentInfoToConsoleAsync(this.managementClient);
         const existingData = await this.getTargetEnvironmentDataAsync();
 
         try {
@@ -56,7 +59,9 @@ export class ImportService {
             if (dataToImport.taxonomies.length) {
                 logDebug({
                     type: 'Info',
-                    message: `Preparing to import '${colors.yellow(dataToImport.taxonomies.length.toString())}' taxonomies`
+                    message: `Preparing to import '${colors.yellow(
+                        dataToImport.taxonomies.length.toString()
+                    )}' taxonomies`
                 });
                 const importedTaxonomies = await importTaxonomiesHelper.importTaxonomiesAsync({
                     managementClient: this.managementClient,
@@ -75,7 +80,9 @@ export class ImportService {
             if (dataToImport.contentTypeSnippets.length) {
                 logDebug({
                     type: 'Info',
-                    message: `Preparing to import '${colors.yellow(dataToImport.contentTypeSnippets.length.toString())}' content type snippets`
+                    message: `Preparing to import '${colors.yellow(
+                        dataToImport.contentTypeSnippets.length.toString()
+                    )}' content type snippets`
                 });
 
                 const importedContentTypeSnippets =
@@ -96,7 +103,9 @@ export class ImportService {
             if (dataToImport.contentTypes.length) {
                 logDebug({
                     type: 'Info',
-                    message: `Preparing to import '${colors.yellow(dataToImport.contentTypes.length.toString())}' content types`
+                    message: `Preparing to import '${colors.yellow(
+                        dataToImport.contentTypes.length.toString()
+                    )}' content types`
                 });
                 const importedContentTypes = await importContentTypesHelper.importContentTypesAsync({
                     managementClient: this.managementClient,

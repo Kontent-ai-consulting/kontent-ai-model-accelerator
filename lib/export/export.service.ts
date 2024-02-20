@@ -4,7 +4,7 @@ import colors from 'colors';
 import {
     defaultRetryStrategy,
     defaultHttpService,
-    printProjectAndEnvironmentInfoToConsoleAsync,
+    printEnvironmentInfoToConsoleAsync,
     logDebug
 } from '../core/index.js';
 import {
@@ -30,7 +30,7 @@ export class ExportService {
     }
 
     async exportAllAsync(): Promise<IExportAllResult> {
-        const environment = await printProjectAndEnvironmentInfoToConsoleAsync(this.managementClient);
+        const environment = await printEnvironmentInfoToConsoleAsync(this.managementClient);
 
         const contentTypes = await this.getContentTypesAsync();
         logDebug({

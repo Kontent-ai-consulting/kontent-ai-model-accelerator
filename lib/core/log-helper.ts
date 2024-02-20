@@ -9,10 +9,23 @@ export type LogType =
     | 'WriteFs'
     | 'Export'
     | 'Import'
+    | 'Cancel'
     | 'Skip'
     | 'Model'
     | 'Complete'
     | null;
+
+export function logErrorAndExit(data: { message: string }): never {
+    logDebug({
+        type: 'Error',
+        message: data.message
+    });
+    exitProcess();
+}
+
+export function exitProcess(): never {
+    process.exit(1);
+}
 
 export function logDebug(data: {
     type: LogType;
@@ -36,6 +49,8 @@ export function logDebug(data: {
         typeColor = colors.yellow;
     } else if (data.type === 'Warning') {
         typeColor = colors.red;
+    } else if (data.type === 'Cancel') {
+        typeColor = colors.red;
     }
 
     if (data.type === 'Error') {
@@ -43,8 +58,10 @@ export function logDebug(data: {
     }
 
     console.log(
-        `${data.type ? `[${typeBgColor(typeColor(data.type))}]` : ''}${data.partA ? `[${colors.yellow(data.partA)}]` : ''}${
-            data.partB ? `[${colors.cyan(data.partB)}]` : ''
-        }${data.performance ? `[${colors.bgYellow(colors.black(data.performance))}]` : ''}: ${data.message}`
+        `${data.type ? `[${typeBgColor(typeColor(data.type))}]` : ''}${
+            data.partA ? `[${colors.yellow(data.partA)}]` : ''
+        }${data.partB ? `[${colors.cyan(data.partB)}]` : ''}${
+            data.performance ? `[${colors.bgYellow(colors.black(data.performance))}]` : ''
+        }: ${data.message}`
     );
 }

@@ -11,6 +11,7 @@ export interface ICliFileConfig {
     taxonomies?: string[];
     contentTypeSnippets?: string[];
     debug?: boolean;
+    force: boolean;
 }
 
 export type CliAction = 'export' | 'fileImport' | 'remoteImport' | 'list';

@@ -1,9 +1,8 @@
 # Kontent.ai Model Accelerator
 
 > [!TIP]  
-> The idea behind this tool is to export & import project structure to & from [Kontent.ai](https://kontent.ai) environments.
-> Data is both exported and imported via `Management Api` into a specified `json` format.
-
+> The idea behind this tool is to export & import project structure to & from [Kontent.ai](https://kontent.ai)
+> environments. Data is both exported and imported via `Management Api` into a specified `json` format.
 
 # Getting started
 
@@ -35,6 +34,7 @@ kontent-ai-accelerator --help
 | **contentTypeSnippets** | Comma separated list of codenames. May be used to import only selected content type snippets |
 | **taxonomies**          | Comma separated list of codenames. May be used to import only selected taxonomies            |
 | **debug**               | If set to `true`, full error messages are shown in console log                               |
+| **force**               | If set to `true`, confirmation prompt is disabled                                            |
 
 ### Execution
 
@@ -56,21 +56,9 @@ kontent-ai-accelerator --action=fileImport --environmentId=xxx --apiKey=yyy --fi
 # Import from the default accelerator model
 kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --model=advanced_model
 
-# Import only parts from the default accelerator model 
+# Import only parts from the default accelerator model
 kontent-ai-accelerator --action=remoteImport --environmentId=xxx --apiKey=yyy --model=advanced_model --contentTypes=link --contentTypeSnippets=metadata --taxonomies=persona,product_type
 
 # To get some help you can use:
 kontent-ai-accelerator --help
 ```
-
-
-
-
-
-
-
-
-
-
-
-
