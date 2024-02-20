@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 import { readFileSync } from 'fs';
-import * as yargs from 'yargs';
+import colors from 'colors';
+import yargs from 'yargs';
 
-import { ICliFileConfig, CliAction, extractErrorMessage } from '../../core';
-import { ExportService } from '../../export';
-import { ImportService } from '../../import';
-import { FileProcessorService } from '../../file-processor';
-import { FileService } from '../file/file.service';
-import { logDebug } from '../../core/log-helper';
-import { getAcceleratorDataService } from '../../data/accelerator-data.service';
+import { ICliFileConfig, CliAction, extractErrorMessage } from '../../core/index.js';
+import { ExportService } from '../../export/index.js';
+import { ImportService } from '../../import/index.js';
+import { FileProcessorService } from '../../file-processor/index.js';
+import { FileService } from '../file/file.service.js';
+import { logDebug } from '../../core/log-helper.js';
+import { getAcceleratorDataService } from '../../data/accelerator-data.service.js';
 
 const argv = yargs(process.argv.slice(2))
     .example(
@@ -43,7 +44,7 @@ const listRemoteAcceleratorsAsync = async () => {
 
     logDebug({
         type: 'Fetch',
-        message: `Fetched '${accelerators.length}' accelerator models`
+        message: `Fetched '${colors.yellow(accelerators.length.toString())}' accelerator models`
     });
 
     for (const accelerator of accelerators) {
@@ -147,10 +148,17 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
     const model = await acceleratorDataService.getAcceleratorModelByCodenameAsync(config.model);
     const exportJson = await acceleratorDataService.extractJsonFromModelAsync(model);
 
-    logDebug({
-        type: 'Fetch',
-        message: `Data for model '${exportJson.metadata.name}' fetched successfully`
+    if (exportJson.metadata.environment?.length) {
+        logDebug({
+            type: 'Fetch',
+            message: `Data for accelerator model '${colors.yellow(exportJson.metadata.environment)}' fetched successfully`
     });
+    } else {
+        logDebug({
+            type: 'Fetch',
+            message: `Data for accelerator model fetched successfully`
+        });
+    }
 
     await importService.importAsync({
         exportJson: exportJson,

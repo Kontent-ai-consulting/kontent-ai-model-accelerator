@@ -1,7 +1,8 @@
 import { ManagementClient, TaxonomyModels } from '@kontent-ai/management-sdk';
-import { IJsonTaxonomy, logDebug } from '../../core';
-import { ITargetEnvironmentData } from '../import.models';
-import { guidHelper } from '../../helpers/index';
+import colors from 'colors';
+import { IJsonTaxonomy, logDebug } from '../../core/index.js';
+import { ITargetEnvironmentData } from '../import.models.js';
+import { guidHelper } from '../../helpers/index.js';
 
 export class ImportTaxonomiesHelper {
     async importTaxonomiesAsync(data: {
@@ -54,15 +55,15 @@ export class ImportTaxonomiesHelper {
         if (existingData.taxonomies.find((m) => m.externalId === taxonomy.externalId)) {
             return {
                 canImport: false,
-                message: `Taxonomy with external id '${taxonomy.externalId}' already exists`
+                message: `Taxonomy with external id '${colors.yellow(taxonomy.externalId ?? '')}' already exists`
             };
         } else if (existingData.taxonomies.find((m) => m.codename === taxonomy.codename)) {
             const newCodename: string = `${taxonomy.codename}_${guidHelper.shortGuid()}`;
 
             return {
-                canImport: false,
+                canImport: true,
                 newCodename: newCodename,
-                message: `Taxonomy with codename '${taxonomy.codename}' already exists. Using newly generated codename '${newCodename}' instead.`
+                message: `Taxonomy with codename '${colors.yellow(taxonomy.codename)}' already exists. Using newly generated codename '${colors.cyan(newCodename)}' instead.`
             };
         }
 

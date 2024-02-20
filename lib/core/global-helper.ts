@@ -1,7 +1,7 @@
 import { IManagementClient, EnvironmentModels, SharedModels } from '@kontent-ai/management-sdk';
 import { IRetryStrategyOptions } from '@kontent-ai/core-sdk';
 
-import { logDebug } from './log-helper';
+import { logDebug } from './log-helper.js';
 
 import { HttpService } from '@kontent-ai/core-sdk';
 import { DeliveryError } from '@kontent-ai/delivery-sdk';
@@ -51,13 +51,8 @@ export async function printProjectAndEnvironmentInfoToConsoleAsync(
 
     logDebug({
         type: 'Info',
-        message: 'Project',
+        message: `Using accelerator model ${environmentInformation.project.environment}`,
         partA: environmentInformation.project.name
-    });
-    logDebug({
-        type: 'Info',
-        message: 'Environment',
-        partA: environmentInformation.project.environment
     });
 
     return environmentInformation.project;

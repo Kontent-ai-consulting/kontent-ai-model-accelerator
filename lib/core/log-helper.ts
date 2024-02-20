@@ -1,4 +1,4 @@
-import { green, yellow, cyan, Color, red, bgYellow, black, magenta, bgBlack } from 'colors';
+import colors, { Color } from 'colors';
 
 export type LogType =
     | 'Error'
@@ -21,21 +21,21 @@ export function logDebug(data: {
     partB?: string;
     performance?: string;
 }): void {
-    let typeColor: Color = green;
-    const typeBgColor: Color = bgBlack;
+    let typeColor: Color = colors.green;
+    const typeBgColor: Color = colors.bgBlack;
 
     if (data.type === 'Error') {
-        typeColor = red;
+        typeColor = colors.red;
     } else if (data.type === 'Info') {
-        typeColor = cyan;
+        typeColor = colors.cyan;
     } else if (data.type === 'Import') {
-        typeColor = yellow;
+        typeColor = colors.yellow;
     } else if (data.type === 'Skip') {
-        typeColor = magenta;
+        typeColor = colors.magenta;
     } else if (data.type === 'Export') {
-        typeColor = yellow;
+        typeColor = colors.yellow;
     } else if (data.type === 'Warning') {
-        typeColor = red;
+        typeColor = colors.red;
     }
 
     if (data.type === 'Error') {
@@ -43,8 +43,8 @@ export function logDebug(data: {
     }
 
     console.log(
-        `${data.type ? `[${typeBgColor(typeColor(data.type))}]` : ''}${data.partA ? `[${yellow(data.partA)}]` : ''}${
-            data.partB ? `[${cyan(data.partB)}]` : ''
-        }${data.performance ? `[${bgYellow(black(data.performance))}]` : ''}: ${data.message}`
+        `${data.type ? `[${typeBgColor(typeColor(data.type))}]` : ''}${data.partA ? `[${colors.yellow(data.partA)}]` : ''}${
+            data.partB ? `[${colors.cyan(data.partB)}]` : ''
+        }${data.performance ? `[${colors.bgYellow(colors.black(data.performance))}]` : ''}: ${data.message}`
     );
 }

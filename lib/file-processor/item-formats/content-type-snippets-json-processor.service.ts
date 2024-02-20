@@ -1,6 +1,6 @@
-import { IContentTypeSnippetsFormatService } from '../file-processor.models';
+import { IContentTypeSnippetsFormatService } from '../file-processor.models.js';
 import { ContentTypeElements, ContentTypeSnippetModels, ElementContracts } from '@kontent-ai/management-sdk';
-import { IJsonContentTypeElement, IJsonContentTypeSnippet } from '../../core';
+import { IJsonContentTypeElement, IJsonContentTypeSnippet } from '../../core/index.js';
 
 export class ContentTypeSnippetsJsonProcessorService implements IContentTypeSnippetsFormatService {
     async transformAsync(types: ContentTypeSnippetModels.ContentTypeSnippet[]): Promise<IJsonContentTypeSnippet[]> {

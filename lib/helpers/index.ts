@@ -1,1 +1,1 @@
-export * from './guid-helper.class';
+export * from './guid-helper.class.js';

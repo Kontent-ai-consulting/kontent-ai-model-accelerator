@@ -1,6 +1,6 @@
-import { ITaxonomiesFormatService } from '../file-processor.models';
+import { ITaxonomiesFormatService } from '../file-processor.models.js';
 import { TaxonomyModels } from '@kontent-ai/management-sdk';
-import { IJsonTaxonomy } from '../../core';
+import { IJsonTaxonomy } from '../../core/index.js';
 
 export class TaxonomiesJsonProcessorService implements ITaxonomiesFormatService {
     async transformAsync(taxonomies: TaxonomyModels.Taxonomy[]): Promise<IJsonTaxonomy[]> {

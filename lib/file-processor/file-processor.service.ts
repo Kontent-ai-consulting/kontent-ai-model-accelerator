@@ -1,8 +1,8 @@
-import { ContentTypesJsonProcessorService } from './item-formats/content-types-json-processor.service';
-import { IExportAllResult, IExportJson } from '../export';
-import { idTranslateHelper } from '../core';
-import { ContentTypeSnippetsJsonProcessorService } from './item-formats/content-type-snippets-json-processor.service';
-import { TaxonomiesJsonProcessorService } from './item-formats/taxonomies-json-processor.service';
+import { ContentTypesJsonProcessorService } from './item-formats/content-types-json-processor.service.js';
+import { IExportAllResult, IExportJson } from '../export/index.js';
+import { idTranslateHelper } from '../core/index.js';
+import { ContentTypeSnippetsJsonProcessorService } from './item-formats/content-type-snippets-json-processor.service.js';
+import { TaxonomiesJsonProcessorService } from './item-formats/taxonomies-json-processor.service.js';
 
 export class FileProcessorService {
     private readonly contentTypeJsonProcessorService: ContentTypesJsonProcessorService =

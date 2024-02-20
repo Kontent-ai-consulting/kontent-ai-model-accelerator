@@ -1,7 +1,8 @@
 import { ContentTypeModels, ManagementClient } from '@kontent-ai/management-sdk';
-import { IJsonContentType, logDebug } from '../../core';
-import { ITargetEnvironmentData } from '../import.models';
-import { guidHelper } from '../../helpers';
+import colors from 'colors';
+import { IJsonContentType, logDebug } from '../../core/index.js';
+import { ITargetEnvironmentData } from '../import.models.js';
+import { guidHelper } from '../../helpers/index.js';
 
 export class ImportContentTypesHelper {
     async importContentTypesAsync(data: {
@@ -61,15 +62,15 @@ export class ImportContentTypesHelper {
         if (existingData.contentTypes.find((m) => m.externalId === type.externalId)) {
             return {
                 canImport: false,
-                message: `Content type with external id '${type.externalId}' already exists`
+                message: `Content type with external id '${colors.yellow(type.externalId)}' already exists`
             };
         } else if (existingData.contentTypes.find((m) => m.codename === type.codename)) {
             const newCodename: string = `${type.codename}_${guidHelper.shortGuid()}`;
 
             return {
-                canImport: false,
+                canImport: true,
                 newCodename: newCodename,
-                message: `Content type with codename '${type.codename}' already exists. Using newly generated codename '${newCodename}' instead.`
+                message: `Content type with codename '${colors.yellow(type.codename)}' already exists. Using newly generated codename '${colors.cyan(newCodename)}' instead.`
             };
         }
 

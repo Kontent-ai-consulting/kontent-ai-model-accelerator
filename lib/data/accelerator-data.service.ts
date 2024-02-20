@@ -1,7 +1,7 @@
-import { defaultHttpService, getAllAcceleratorsUrl, logDebug } from '../core';
+import { defaultHttpService, getAllAcceleratorsUrl, logDebug } from '../core/index.js';
 import { HttpService } from '@kontent-ai/core-sdk';
-import { IExportJson } from '../export';
-import { IAccelerator, IAcceleratorResponse } from './accelerator-models';
+import { IExportJson } from '../export/index.js';
+import { IAccelerator, IAcceleratorResponse } from './accelerator-models.js';
 
 export function getAcceleratorDataService(): AcceleratorDataService {
     return new AcceleratorDataService();

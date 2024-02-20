@@ -1,2 +1,2 @@
-export * from './accelerator-data.service';
-export * from './accelerator-models';
+export * from './accelerator-data.service.js';
+export * from './accelerator-models.js';

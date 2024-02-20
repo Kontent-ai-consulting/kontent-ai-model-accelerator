@@ -1,7 +1,12 @@
-import { IExportAllResult, IExportConfig, IExportData } from './export.models';
-import { defaultRetryStrategy, defaultHttpService, printProjectAndEnvironmentInfoToConsoleAsync } from '../core';
-import { version } from '../../package.json';
-import { logDebug } from '../core/log-helper';
+
+import { IExportAllResult, IExportConfig, IExportData } from './export.models.js';
+import colors from 'colors';
+import {
+    defaultRetryStrategy,
+    defaultHttpService,
+    printProjectAndEnvironmentInfoToConsoleAsync,
+    logDebug
+} from '../core/index.js';
 import {
     ContentTypeModels,
     createManagementClient,
@@ -30,19 +35,19 @@ export class ExportService {
         const contentTypes = await this.getContentTypesAsync();
         logDebug({
             type: 'Fetch',
-            message: `Fetched '${contentTypes.length}' content types`
+            message: `Fetched '${colors.yellow(contentTypes.length.toString())}' content types`
         });
 
         const taxonomies = await this.getTaxonomiesAsync();
         logDebug({
             type: 'Fetch',
-            message: `Fetched '${taxonomies.length}' taxonomies`,
+            message: `Fetched '${colors.yellow(taxonomies.length.toString())}' taxonomies`
         });
 
         const contentTypeSnippets = await this.getContentTypeSnippetsAsync();
         logDebug({
             type: 'Fetch',
-            message: `Fetched '${contentTypeSnippets.length}' content type snippets`,
+            message: `Fetched '${colors.yellow(contentTypeSnippets.length.toString())}' content type snippets`,
             partA: contentTypeSnippets.length.toString()
         });
 
@@ -54,9 +59,9 @@ export class ExportService {
 
         return {
             metadata: {
-                name: environment.name,
+                project: environment.name,
+                environment: environment.environment,
                 created: new Date(),
-                packageVersion: version
             },
             data
         };

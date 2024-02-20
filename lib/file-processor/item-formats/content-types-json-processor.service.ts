@@ -1,6 +1,6 @@
-import { IContentTypeFormatService } from '../file-processor.models';
+import { IContentTypeFormatService } from '../file-processor.models.js';
 import { ContentTypeElements, ContentTypeModels, ElementContracts } from '@kontent-ai/management-sdk';
-import { IJsonContentType, IJsonContentTypeElement, IJsonContentTypeGroup } from '../../core';
+import { IJsonContentType, IJsonContentTypeElement, IJsonContentTypeGroup } from '../../core/index.js';
 
 export class ContentTypesJsonProcessorService implements IContentTypeFormatService {
     async transformAsync(types: ContentTypeModels.ContentType[]): Promise<IJsonContentType[]> {

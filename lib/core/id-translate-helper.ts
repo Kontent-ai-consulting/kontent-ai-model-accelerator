@@ -1,4 +1,4 @@
-import { IExportAllResult } from '../export';
+import { IExportAllResult } from '../export/export.models.js';
 
 export interface IIdCodenameTranslationResult {
     [key: string]: string;

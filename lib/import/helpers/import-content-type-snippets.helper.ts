@@ -1,7 +1,8 @@
 import { ContentTypeSnippetModels, ManagementClient } from '@kontent-ai/management-sdk';
-import { IJsonContentTypeSnippet, logDebug } from '../../core';
-import { ITargetEnvironmentData } from '../import.models';
-import { guidHelper } from '../../helpers';
+import colors from 'colors';
+import { IJsonContentTypeSnippet, logDebug } from '../../core/index.js';
+import { ITargetEnvironmentData } from '../import.models.js';
+import { guidHelper } from '../../helpers/index.js';
 
 export class ImportContentTypeSnippetsHelper {
     async importContentTypeSnipppetsAsync(data: {
@@ -60,15 +61,15 @@ export class ImportContentTypeSnippetsHelper {
         if (existingData.contentTypeSnippets.find((m) => m.externalId === snippet.externalId)) {
             return {
                 canImport: false,
-                message: `Snippet with external id '${snippet.externalId}' already exists`
+                message: `Snippet with external id '${colors.yellow(snippet.externalId)}' already exists`
             };
         } else if (existingData.contentTypeSnippets.find((m) => m.codename === snippet.codename)) {
             const newCodename: string = `${snippet.codename}_${guidHelper.shortGuid()}`;
 
             return {
-                canImport: false,
+                canImport: true,
                 newCodename: newCodename,
-                message: `Snippet with codename '${snippet.codename}' already exists. Using newly generated codename '${newCodename}' instead.`
+                message: `Snippet with codename '${colors.yellow(snippet.codename)}' already exists. Using newly generated codename '${colors.cyan(newCodename)}' instead.`
             };
         }
 

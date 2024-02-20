@@ -1,5 +1,5 @@
 import { ContentTypeModels, ContentTypeSnippetModels, TaxonomyModels } from '@kontent-ai/management-sdk';
-import { IJsonContentType, IJsonContentTypeSnippet, IJsonTaxonomy } from 'lib/core';
+import { IJsonContentType, IJsonContentTypeSnippet, IJsonTaxonomy } from 'lib/core/index.js';
 
 export interface IContentTypeFormatService {
     transformAsync(types: ContentTypeModels.ContentType[]): Promise<IJsonContentType[]>;

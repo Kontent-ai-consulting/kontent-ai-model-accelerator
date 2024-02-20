@@ -4,7 +4,7 @@ import {
     TaxonomyModels,
     ContentTypeSnippetModels
 } from '@kontent-ai/management-sdk';
-
+import colors from 'colors';
 import {
     handleError,
     defaultRetryStrategy,
@@ -13,13 +13,13 @@ import {
     IJsonContentType,
     IJsonContentTypeSnippet,
     IJsonTaxonomy
-} from '../core';
-import { IImportConfig, IImportedData, ITargetEnvironmentData } from './import.models';
-import { logDebug } from '../core/log-helper';
-import { importContentTypesHelper } from './helpers/import-content-types.helper';
-import { IExportJson } from '../export';
-import { importContentTypeSnippetsHelper } from './helpers/import-content-type-snippets.helper';
-import { importTaxonomiesHelper } from './helpers/import-taxonomies.helper';
+} from '../core/index.js';
+import { IImportConfig, IImportedData, ITargetEnvironmentData } from './import.models.js';
+import { logDebug } from '../core/log-helper.js';
+import { importContentTypesHelper } from './helpers/import-content-types.helper.js';
+import { IExportJson } from '../export/index.js';
+import { importContentTypeSnippetsHelper } from './helpers/import-content-type-snippets.helper.js';
+import { importTaxonomiesHelper } from './helpers/import-taxonomies.helper.js';
 
 export class ImportService {
     private readonly managementClient: ManagementClient;
@@ -56,7 +56,7 @@ export class ImportService {
             if (dataToImport.taxonomies.length) {
                 logDebug({
                     type: 'Info',
-                    message: `Preparing to import '${dataToImport.taxonomies.length}' taxonomies`
+                    message: `Preparing to import '${colors.yellow(dataToImport.taxonomies.length.toString())}' taxonomies`
                 });
                 const importedTaxonomies = await importTaxonomiesHelper.importTaxonomiesAsync({
                     managementClient: this.managementClient,
@@ -75,7 +75,7 @@ export class ImportService {
             if (dataToImport.contentTypeSnippets.length) {
                 logDebug({
                     type: 'Info',
-                    message: `Preparing to import '${dataToImport.contentTypeSnippets.length}' content type snippets`
+                    message: `Preparing to import '${colors.yellow(dataToImport.contentTypeSnippets.length.toString())}' content type snippets`
                 });
 
                 const importedContentTypeSnippets =
@@ -96,7 +96,7 @@ export class ImportService {
             if (dataToImport.contentTypes.length) {
                 logDebug({
                     type: 'Info',
-                    message: `Preparing to import '${dataToImport.contentTypes.length}' content types`
+                    message: `Preparing to import '${colors.yellow(dataToImport.contentTypes.length.toString())}' content types`
                 });
                 const importedContentTypes = await importContentTypesHelper.importContentTypesAsync({
                     managementClient: this.managementClient,
@@ -218,7 +218,7 @@ export class ImportService {
 
         logDebug({
             type: 'Fetch',
-            message: `Fetched '${contentTypes.length}' existing content types`
+            message: `Fetched '${colors.yellow(contentTypes.length.toString())}' existing content types`
         });
 
         const contentTypeSnippets: ContentTypeSnippetModels.ContentTypeSnippet[] = (
@@ -227,7 +227,7 @@ export class ImportService {
 
         logDebug({
             type: 'Fetch',
-            message: `Fetched '${contentTypeSnippets.length}' existing content type snippets`
+            message: `Fetched '${colors.yellow(contentTypeSnippets.length.toString())}' existing content type snippets`
         });
 
         const taxonomies: TaxonomyModels.Taxonomy[] = (await this.managementClient.listTaxonomies().toAllPromise()).data
@@ -235,7 +235,7 @@ export class ImportService {
 
         logDebug({
             type: 'Fetch',
-            message: `Fetched '${taxonomies.length}'  existing taxonomies`
+            message: `Fetched '${colors.yellow(taxonomies.length.toString())}'  existing taxonomies`
         });
 
         return {

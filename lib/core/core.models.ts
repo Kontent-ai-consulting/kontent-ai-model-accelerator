@@ -16,8 +16,8 @@ export interface ICliFileConfig {
 export type CliAction = 'export' | 'fileImport' | 'remoteImport' | 'list';
 
 export interface IPackageMetadata {
-    name: string;
-    packageVersion: string;
+    project: string;
+    environment: string;
     created: Date;
 }
 

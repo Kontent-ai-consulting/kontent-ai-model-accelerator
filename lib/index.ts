@@ -1,5 +1,6 @@
 // Public API
-export * from './core';
-export * from './export';
-export * from './import';
-export * from './file-processor';
+export * from './core/index.js';
+export * from './export/index.js';
+export * from './import/index.js';
+export * from './data/index.js';
+export * from './file-processor/index.js';
