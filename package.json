@@ -1,6 +1,6 @@
 {
     "name": "xyz-accelerator",
-    "version": "0.0.7",
+    "version": "0.0.9",
     "description": "This utility enables easy export / import of project structure's in Kontent.ai",
     "preferGlobal": true,
     "private": false,
@@ -27,7 +27,7 @@
         "release:beta": "standard-version --prerelease",
         "prepublishOnly": "npm run lint && npm run build",
         "publish:beta": "npm publish --tag=next",
-           "build:es2022": "tsc --p tsconfig.es2022.json",
+        "build:es2022": "tsc --p tsconfig.es2022.json",
         "build": "npm run clean && npm run build:es2022",
         "test:all": "npm run build",
         "test:list": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --max-http-header-size=80000000 --action=list ",
