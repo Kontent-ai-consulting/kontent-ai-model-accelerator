@@ -10,7 +10,10 @@ export type LogType =
     | 'Export'
     | 'Import'
     | 'Cancel'
+    | 'Content Types'
     | 'Skip'
+    | 'Taxonomies'
+    | 'Snippets'
     | 'Model'
     | 'Complete'
     | null;

@@ -3,7 +3,13 @@ import { readFileSync } from 'fs';
 import colors from 'colors';
 import yargs from 'yargs';
 
-import { ICliFileConfig, CliAction, handleError, confirmImportAsync } from '../../core/index.js';
+import {
+    ICliFileConfig,
+    CliAction,
+    handleError,
+    confirmImportAsync,
+    confirmDataToImportAsync
+} from '../../core/index.js';
 import { ExportService } from '../../export/index.js';
 import { ImportService } from '../../import/index.js';
 import { FileProcessorService } from '../../file-processor/index.js';
@@ -113,6 +119,12 @@ const importFromFile = async (config: ICliFileConfig) => {
 
     const itemsFile = await fileService.loadFileAsync(filename);
     const extractedData = await fileProcessorService.extractJsonFileAsync(itemsFile);
+
+    await confirmDataToImportAsync({
+        force: config.force,
+        exportJson: extractedData
+    });
+
     await importService.importAsync({
         exportJson: extractedData,
         selectedContentTypes: config.contentTypes ?? [],
@@ -151,26 +163,16 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
 
     logDebug({
         type: 'Fetch',
-        message: `Downloading template`,
-        partA: config.model
+        message: `Downloading template '${colors.yellow(config.model)}'`
     });
 
     const model = await acceleratorDataService.getAcceleratorModelByCodenameAsync(config.model);
     const exportJson = await acceleratorDataService.extractJsonFromModelAsync(model);
 
-    if (exportJson.metadata.environment?.length) {
-        logDebug({
-            type: 'Fetch',
-            message: `Data for accelerator model '${colors.yellow(
-                exportJson.metadata.environment
-            )}' fetched successfully`
-        });
-    } else {
-        logDebug({
-            type: 'Fetch',
-            message: `Data for accelerator model fetched successfully`
-        });
-    }
+    await confirmDataToImportAsync({
+        force: config.force,
+        exportJson: exportJson
+    });
 
     await importService.importAsync({
         exportJson: exportJson,

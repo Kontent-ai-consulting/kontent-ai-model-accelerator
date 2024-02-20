@@ -6,8 +6,9 @@ import { exitProcess, logDebug, logErrorAndExit } from './log-helper.js';
 
 import { HttpService } from '@kontent-ai/core-sdk';
 import { DeliveryError } from '@kontent-ai/delivery-sdk';
-import { ImportService } from 'lib/index.js';
 import prompts from 'prompts';
+import { ImportService } from '../import/index.js';
+import { IExportJson } from '../export/index.js';
 
 const rateExceededErrorCode: number = 10000;
 
@@ -130,7 +131,7 @@ export async function confirmImportAsync(data: { force: boolean; importService: 
     if (data.force) {
         logDebug({
             type: 'Info',
-            message: `Skipping confirmation due to the use of force param`
+            message: `Skipping target environment confirmation due to the use of force param`
         });
     } else {
         const confirmed = await prompts({
@@ -139,6 +140,50 @@ export async function confirmImportAsync(data: { force: boolean; importService: 
             message: `Are you sure to import models into ${colors.yellow(
                 targetEnvironment.environment
             )} environment of project ${colors.cyan(targetEnvironment.name)}?`
+        });
+
+        if (!confirmed.confirm) {
+            logDebug({
+                type: 'Cancel',
+                message: `Confirmation refused. Exiting process.`
+            });
+            exitProcess();
+        }
+    }
+}
+export async function confirmDataToImportAsync(data: { force: boolean; exportJson: IExportJson }): Promise<void> {
+    if (data.force) {
+        logDebug({
+            type: 'Info',
+            message: `Skipping data confirmation due to the use of force param`
+        });
+    } else {
+        if (data.exportJson.metadata.environment) {
+            logDebug({
+                type: 'Model',
+                message: `${colors.yellow(data.exportJson.metadata.environment)}`
+            });
+        }
+        logDebug({
+            type: 'Content Types',
+            message: `${data.exportJson.contentTypes?.map((m) => m.name)?.join(', ')}`,
+            partA: (data.exportJson.contentTypes?.length ?? 0).toString()
+        });
+        logDebug({
+            type: 'Snippets',
+            message: `${data.exportJson.contentTypeSnippets?.map((m) => m.name)?.join(', ')}`,
+            partA: (data.exportJson.contentTypeSnippets?.length ?? 0).toString()
+        });
+        logDebug({
+            type: 'Taxonomies',
+            message: `${data.exportJson.taxonomies?.map((m) => m.name)?.join(', ')}`,
+            partA: (data.exportJson.taxonomies?.length ?? 0).toString()
+        });
+
+        const confirmed = await prompts({
+            type: 'confirm',
+            name: 'confirm',
+            message: `Are you sure to import models above into target environment?`
         });
 
         if (!confirmed.confirm) {

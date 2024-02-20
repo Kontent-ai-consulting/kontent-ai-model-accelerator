@@ -1,4 +1,4 @@
-import { defaultHttpService, getAllAcceleratorsUrl, logDebug } from '../core/index.js';
+import { defaultHttpService, getAllAcceleratorsUrl } from '../core/index.js';
 import { HttpService } from '@kontent-ai/core-sdk';
 import { IExportJson } from '../export/index.js';
 import { IAccelerator, IAcceleratorResponse } from './accelerator-models.js';
@@ -32,19 +32,12 @@ export class AcceleratorDataService {
 
     async extractJsonFromModelAsync(accelerator: IAccelerator): Promise<IExportJson> {
         const assetBinaryData = await this.getBinaryDataFromUrlAsync(accelerator.exportUrl);
-
         return JSON.parse(assetBinaryData);
     }
 
     private async getBinaryDataFromUrlAsync(url: string): Promise<any> {
         // temp fix for Kontent.ai Repository not validating url
         url = url.replace('#', '%23');
-
-        logDebug({
-            type: 'Fetch',
-            message: `Downloading Binary data`,
-            partA: url
-        });
 
         const response = await this.httpService.getAsync(
             {
