@@ -1,16 +1,22 @@
 # Kontent.ai Model Accelerator
 
-The purpose of this project is to export & import project structure to & from [Kontent.ai](https://kontent.ai) projects.
+The idea behind this tool is to export & import project structure to & from [Kontent.ai](https://kontent.ai) environments.
+Data is both exported and imported via `Management Api` into a specified `json` format.
 
-Data is both exported and imported via `Management Api` into a dedicated `json` format.
+# Getting started
 
-This library can only be used in `node.js`. Use in Browsers is not supported.
+We recommend running data-ops with `npx`. Use `--help` anytime to get information about available commands and their
+options.
 
-## Installation
+```bash
+npx @kontent-ai/content-model-accelerator --help
 
-Install package globally:
+# you can also install the package globally, or locally
+npm i @kontent-ai/content-model-accelerator -g
 
-`npm i xyz-accelerator -g`
+# with the package installed, you can call the tool as follows
+kontent-ai-accelerator --help
+```
 
 ## Use via CLI
 
@@ -30,9 +36,9 @@ Install package globally:
 
 ### Execution
 
-> We do not recommend importing data back to your production environment directly. Instead, we recommend that you create
-> a new environment based on your production and test the import first. If the import completes successfully, you may
-> swap environments or run it again on the production.
+> [!CAUTION]  
+> **We do not recommended importing into a production environment directly** (without proper testing). Instead you
+> should first create a testing environment and run the script there to make sure everything works as you intended to.
 
 List available templates:
 
