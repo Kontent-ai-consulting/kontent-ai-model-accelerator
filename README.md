@@ -1,7 +1,9 @@
 # Kontent.ai Model Accelerator
 
-The idea behind this tool is to export & import project structure to & from [Kontent.ai](https://kontent.ai) environments.
-Data is both exported and imported via `Management Api` into a specified `json` format.
+> [!TIP]  
+> The idea behind this tool is to export & import project structure to & from [Kontent.ai](https://kontent.ai) environments.
+> Data is both exported and imported via `Management Api` into a specified `json` format.
+
 
 # Getting started
 
