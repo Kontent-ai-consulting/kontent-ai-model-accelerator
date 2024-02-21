@@ -13,7 +13,9 @@ import {
     IJsonContentType,
     IJsonContentTypeSnippet,
     IJsonTaxonomy,
-    getEnvironmentInfoAsync
+    getEnvironmentInfoAsync,
+    executeWithTrackingAsync,
+    packageVersion
 } from '../core/index.js';
 import { IImportConfig, IImportedData, ITargetEnvironmentData } from './import.models.js';
 import { logDebug } from '../core/log-helper.js';
@@ -25,7 +27,7 @@ import { importTaxonomiesHelper } from './helpers/import-taxonomies.helper.js';
 export class ImportService {
     private readonly managementClient: ManagementClient;
 
-    constructor(config: IImportConfig) {
+    constructor(private readonly config: IImportConfig) {
         this.managementClient = new ManagementClient({
             apiKey: config.apiKey,
             baseUrl: config.baseUrl,
@@ -45,89 +47,103 @@ export class ImportService {
         selectedTaxonomies: string[];
         selectedContentTypeSnippets: string[];
     }): Promise<IImportedData> {
-        const importedData: IImportedData = {
-            contentTypes: [],
-            contentTypeSnippets: [],
-            taxonomies: []
-        };
+        return await executeWithTrackingAsync({
+            event: {
+                action: 'import',
+                tool: 'model-accelerator',
+                version: packageVersion,
+                result: 'unknown',
+                relatedEnvironmentId: this.config.environmentId,
+                details: {
+                    metadata: data.exportJson.metadata,
+                }
+            },
+            func: async () => {
+                const importedData: IImportedData = {
+                    contentTypes: [],
+                    contentTypeSnippets: [],
+                    taxonomies: []
+                };
 
-        const dataToImport = this.getDataToImport(data);
-        const existingData = await this.getTargetEnvironmentDataAsync();
+                const dataToImport = this.getDataToImport(data);
+                const existingData = await this.getTargetEnvironmentDataAsync();
 
-        try {
-            //  Taxonomies
-            if (dataToImport.taxonomies.length) {
-                logDebug({
-                    type: 'Info',
-                    message: `Preparing to import '${colors.yellow(
-                        dataToImport.taxonomies.length.toString()
-                    )}' taxonomies`
-                });
-                const importedTaxonomies = await importTaxonomiesHelper.importTaxonomiesAsync({
-                    managementClient: this.managementClient,
-                    existingData: existingData,
-                    importTaxonomies: dataToImport.taxonomies
-                });
-                importedData.taxonomies.push(...importedTaxonomies);
-            } else {
-                logDebug({
-                    type: 'Info',
-                    message: 'There are no taxonomies to import'
-                });
-            }
+                try {
+                    //  Taxonomies
+                    if (dataToImport.taxonomies.length) {
+                        logDebug({
+                            type: 'Info',
+                            message: `Preparing to import '${colors.yellow(
+                                dataToImport.taxonomies.length.toString()
+                            )}' taxonomies`
+                        });
+                        const importedTaxonomies = await importTaxonomiesHelper.importTaxonomiesAsync({
+                            managementClient: this.managementClient,
+                            existingData: existingData,
+                            importTaxonomies: dataToImport.taxonomies
+                        });
+                        importedData.taxonomies.push(...importedTaxonomies);
+                    } else {
+                        logDebug({
+                            type: 'Info',
+                            message: 'There are no taxonomies to import'
+                        });
+                    }
 
-            //  Content type snippets
-            if (dataToImport.contentTypeSnippets.length) {
-                logDebug({
-                    type: 'Info',
-                    message: `Preparing to import '${colors.yellow(
-                        dataToImport.contentTypeSnippets.length.toString()
-                    )}' content type snippets`
-                });
+                    //  Content type snippets
+                    if (dataToImport.contentTypeSnippets.length) {
+                        logDebug({
+                            type: 'Info',
+                            message: `Preparing to import '${colors.yellow(
+                                dataToImport.contentTypeSnippets.length.toString()
+                            )}' content type snippets`
+                        });
 
-                const importedContentTypeSnippets =
-                    await importContentTypeSnippetsHelper.importContentTypeSnipppetsAsync({
-                        managementClient: this.managementClient,
-                        existingData: existingData,
-                        importContentTypeSnippets: dataToImport.contentTypeSnippets
+                        const importedContentTypeSnippets =
+                            await importContentTypeSnippetsHelper.importContentTypeSnipppetsAsync({
+                                managementClient: this.managementClient,
+                                existingData: existingData,
+                                importContentTypeSnippets: dataToImport.contentTypeSnippets
+                            });
+                        importedData.contentTypeSnippets.push(...importedContentTypeSnippets);
+                    } else {
+                        logDebug({
+                            type: 'Info',
+                            message: 'There are no content type snippets to import'
+                        });
+                    }
+
+                    //  Content types
+                    if (dataToImport.contentTypes.length) {
+                        logDebug({
+                            type: 'Info',
+                            message: `Preparing to import '${colors.yellow(
+                                dataToImport.contentTypes.length.toString()
+                            )}' content types`
+                        });
+                        const importedContentTypes = await importContentTypesHelper.importContentTypesAsync({
+                            managementClient: this.managementClient,
+                            existingData: existingData,
+                            importContentTypes: dataToImport.contentTypes
+                        });
+                        importedData.contentTypes.push(...importedContentTypes);
+                    } else {
+                        logDebug({
+                            type: 'Info',
+                            message: 'There are no content types to import'
+                        });
+                    }
+
+                    logDebug({
+                        type: 'Info',
+                        message: 'Import finished'
                     });
-                importedData.contentTypeSnippets.push(...importedContentTypeSnippets);
-            } else {
-                logDebug({
-                    type: 'Info',
-                    message: 'There are no content type snippets to import'
-                });
+                } catch (error) {
+                    handleError(error);
+                }
+                return importedData;
             }
-
-            //  Content types
-            if (dataToImport.contentTypes.length) {
-                logDebug({
-                    type: 'Info',
-                    message: `Preparing to import '${colors.yellow(
-                        dataToImport.contentTypes.length.toString()
-                    )}' content types`
-                });
-                const importedContentTypes = await importContentTypesHelper.importContentTypesAsync({
-                    managementClient: this.managementClient,
-                    existingData: existingData,
-                    importContentTypes: dataToImport.contentTypes
-                });
-                importedData.contentTypes.push(...importedContentTypes);
-            } else {
-                logDebug({
-                    type: 'Info',
-                    message: 'There are no content types to import'
-                });
-            }
-
-            logDebug({
-                type: 'Info',
-                message: 'Import finished'
-            });
-        } catch (error) {
-            handleError(error);
-        }
-        return importedData;
+        });
     }
 
     private getDataToImport(data: {

@@ -1,26 +1,19 @@
 import { IManagementClient, EnvironmentModels, SharedModels } from '@kontent-ai/management-sdk';
-import { IRetryStrategyOptions } from '@kontent-ai/core-sdk';
 import colors from 'colors';
 
 import { exitProcess, logDebug, logErrorAndExit } from './log-helper.js';
 
-import { HttpService } from '@kontent-ai/core-sdk';
 import { DeliveryError } from '@kontent-ai/delivery-sdk';
 import prompts from 'prompts';
 import { ImportService } from '../import/index.js';
 import { IExportJson } from '../export/index.js';
-
-const rateExceededErrorCode: number = 10000;
+import { ITrackingEventData, getTrackingService } from '@kontent-ai-consulting/tools-analytics';
 
 export interface IErrorData {
     message: string;
     requestData?: string;
     requestUrl?: string;
 }
-
-export const defaultHttpService: HttpService = new HttpService({
-    logErrorsToConsole: false
-});
 
 export function sleepAsync(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -39,20 +32,6 @@ export function is404Error(error: any): boolean {
 
     return false;
 }
-
-export const defaultRetryStrategy: IRetryStrategyOptions = {
-    addJitter: true,
-    canRetryError: (err) => {
-        // do not retry failed request from Kontent.ai
-        const errorCode = err?.response?.data?.error_code ?? -1;
-        if (errorCode >= 0 && errorCode !== rateExceededErrorCode) {
-            return false;
-        }
-        return true;
-    },
-    maxAttempts: 3,
-    deltaBackoffMs: 1000
-};
 
 export async function printEnvironmentInfoToConsoleAsync(
     client: IManagementClient<any>
@@ -193,5 +172,31 @@ export async function confirmDataToImportAsync(data: { force: boolean; exportJso
             });
             exitProcess();
         }
+    }
+}
+
+export async function executeWithTrackingAsync<TResult>(data: {
+    func: () => Promise<TResult>;
+    event: ITrackingEventData;
+}): Promise<TResult> {
+    const trackingService = getTrackingService();
+    const event = await trackingService.trackEventAsync(data.event);
+
+    try {
+        const result = await data.func();
+
+        await trackingService.setEventResultAsync({
+            eventId: event.eventId,
+            result: 'success'
+        });
+
+        return result;
+    } catch (error) {
+        await trackingService.setEventResultAsync({
+            eventId: event.eventId,
+            result: 'fail'
+        });
+
+        throw error;
     }
 }

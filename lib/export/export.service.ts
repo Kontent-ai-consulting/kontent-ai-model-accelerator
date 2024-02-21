@@ -1,11 +1,11 @@
-
 import { IExportAllResult, IExportConfig, IExportData } from './export.models.js';
 import colors from 'colors';
 import {
     defaultRetryStrategy,
     defaultHttpService,
     printEnvironmentInfoToConsoleAsync,
-    logDebug
+    logDebug,
+    executeWithTrackingAsync
 } from '../core/index.js';
 import {
     ContentTypeModels,
@@ -13,11 +13,12 @@ import {
     ManagementClient,
     TaxonomyModels
 } from '@kontent-ai/management-sdk';
+import { packageVersion } from '../core/version.js';
 
 export class ExportService {
     private readonly managementClient: ManagementClient;
 
-    constructor(config: IExportConfig) {
+    constructor(private readonly config: IExportConfig) {
         const retryStrategy = config.retryStrategy ?? defaultRetryStrategy;
 
         this.managementClient = createManagementClient({
@@ -30,41 +31,51 @@ export class ExportService {
     }
 
     async exportAllAsync(): Promise<IExportAllResult> {
-        const environment = await printEnvironmentInfoToConsoleAsync(this.managementClient);
-
-        const contentTypes = await this.getContentTypesAsync();
-        logDebug({
-            type: 'Fetch',
-            message: `Fetched '${colors.yellow(contentTypes.length.toString())}' content types`
-        });
-
-        const taxonomies = await this.getTaxonomiesAsync();
-        logDebug({
-            type: 'Fetch',
-            message: `Fetched '${colors.yellow(taxonomies.length.toString())}' taxonomies`
-        });
-
-        const contentTypeSnippets = await this.getContentTypeSnippetsAsync();
-        logDebug({
-            type: 'Fetch',
-            message: `Fetched '${colors.yellow(contentTypeSnippets.length.toString())}' content type snippets`,
-            partA: contentTypeSnippets.length.toString()
-        });
-
-        const data: IExportData = {
-            contentTypes: contentTypes,
-            contentTypeSnippets: contentTypeSnippets,
-            taxonomies: taxonomies
-        };
-
-        return {
-            metadata: {
-                project: environment.name,
-                environment: environment.environment,
-                created: new Date(),
+        return await executeWithTrackingAsync({
+            event: {
+                action: 'Export',
+                tool: 'model-accelerator',
+                version: packageVersion,
+                result: 'unknown',
+                relatedEnvironmentId: this.config.environmentId
             },
-            data
-        };
+            func: async () => {
+                const environment = await printEnvironmentInfoToConsoleAsync(this.managementClient);
+                const contentTypes = await this.getContentTypesAsync();
+                logDebug({
+                    type: 'Fetch',
+                    message: `Fetched '${colors.yellow(contentTypes.length.toString())}' content types`
+                });
+
+                const taxonomies = await this.getTaxonomiesAsync();
+                logDebug({
+                    type: 'Fetch',
+                    message: `Fetched '${colors.yellow(taxonomies.length.toString())}' taxonomies`
+                });
+
+                const contentTypeSnippets = await this.getContentTypeSnippetsAsync();
+                logDebug({
+                    type: 'Fetch',
+                    message: `Fetched '${colors.yellow(contentTypeSnippets.length.toString())}' content type snippets`,
+                    partA: contentTypeSnippets.length.toString()
+                });
+
+                const data: IExportData = {
+                    contentTypes: contentTypes,
+                    contentTypeSnippets: contentTypeSnippets,
+                    taxonomies: taxonomies
+                };
+
+                return {
+                    metadata: {
+                        project: environment.name,
+                        environment: environment.environment,
+                        created: new Date()
+                    },
+                    data
+                };
+            }
+        });
     }
 
     private async getTaxonomiesAsync(): Promise<TaxonomyModels.Taxonomy[]> {

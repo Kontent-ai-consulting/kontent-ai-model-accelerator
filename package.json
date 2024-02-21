@@ -12,11 +12,11 @@
         "url": "https://github.com/Enngage/kontent-ai-model-accelerator"
     },
     "engines": {
-        "node": ">=16.0.0"
+        "node": ">=18.0.0"
     },
     "author": "Richard Sustek",
-    "exports": "./dist/es2022/index.js",
-    "types": "./dist/es2022/index.d.ts",
+    "exports": "./dist/es2022/lib/index.js",
+    "types": "./dist/es2022/lib/index.d.ts",
     "type": "module",
     "directories": {},
     "scripts": {
@@ -30,11 +30,11 @@
         "build:es2022": "tsc --p tsconfig.es2022.json",
         "build": "npm run clean && npm run build:es2022",
         "test:all": "npm run build",
-        "test:list": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --max-http-header-size=80000000 --action=list ",
-        "test:export": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --max-http-header-size=80000000 --config=export-config.json ",
-        "test:import:file": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --config=import-file-config.json",
-        "test:import:remote": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --config=import-remote-config.json",
-        "test:help": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --help",
+        "test:list": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --max-http-header-size=80000000 --action=list ",
+        "test:export": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --max-http-header-size=80000000 --config=export-config.json ",
+        "test:import:file": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --config=import-file-config.json",
+        "test:import:remote": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --config=import-remote-config.json",
+        "test:help": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --help",
         "lint": "npx eslint lib",
         "clean": "node clean.js"
     },
@@ -48,6 +48,7 @@
     "dependencies": {
         "@kontent-ai/management-sdk": "5.8.2",
         "@kontent-ai/delivery-sdk": "14.6.0",
+        "@kontent-ai-consulting/tools-analytics": "0.0.4",
         "colors": "1.4.0",
         "yargs": "17.7.2"
     },

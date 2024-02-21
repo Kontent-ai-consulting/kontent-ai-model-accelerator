@@ -51,4 +51,3 @@ export interface IJsonTaxonomy {
 
 export interface IJsonContentTypeElement extends ContentTypeElements.IElementShared {}
 
-export const getAllAcceleratorsUrl: string = `https://learn.devkontentmasters.com/learn/api/accelerators/getAll`;
