@@ -1,7 +1,7 @@
 # Kontent.ai Model Accelerator
 
 > [!TIP]  
-> The idea behind this tool is to export & import project structure to & from [Kontent.ai](https://kontent.ai)
+> The idea behind this tool is to export & import content model structures to & from [Kontent.ai](https://kontent.ai)
 > environments. Data is both exported and imported via `Management Api` into a specified `json` format.
 
 # Getting started
@@ -29,17 +29,17 @@ kontent-ai-accelerator --help
 | **apiKey**              | Management API key **(required)**                                                            |
 | **action**              | One of (`export`, `list`, `remoteImport` or `fileImport`) **(required)**                     |
 | **filename**            | Filename used to export or import                                                            |
-| **project**             | Codename of the remote project (required for `remoteImport`)                                 |
-| **contentTypes**        | Comma separated list of codenames. May be used to import only selected content types         |
-| **contentTypeSnippets** | Comma separated list of codenames. May be used to import only selected content type snippets |
-| **taxonomies**          | Comma separated list of codenames. May be used to import only selected taxonomies            |
+| **model**             | Codename of the remote model (required for `remoteImport`)                                 |
+| **contentTypes**        | Comma-separated list of codenames. May be used to import only selected content types         |
+| **contentTypeSnippets** | Comma-separated list of codenames. May be used to import only selected content type snippets |
+| **taxonomies**          | Comma-separated list of codenames. May be used to import only selected taxonomies            |
 | **debug**               | If set to `true`, full error messages are shown in console log                               |
 | **force**               | If set to `true`, confirmation prompt is disabled                                            |
 
 ### Execution
 
 > [!CAUTION]  
-> **We do not recommended importing into a production environment directly** (without proper testing). Instead you
+> **We do not recommend importing into a production environment directly** (without proper testing). Instead you
 > should first create a testing environment and run the script there to make sure everything works as you intended to.
 
 ```bash
@@ -47,7 +47,7 @@ kontent-ai-accelerator --help
 # List default accelerator models
 kontent-ai-accelerator --action=list
 
-# Export existing project into a json
+# Export existing model to json
 kontent-ai-accelerator --action=export --environmentId=xxx --apiKey=yyy --filename=my-export.json
 
 # Import from file to an existing environment
