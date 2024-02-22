@@ -33,7 +33,7 @@ export class ExportService {
     async exportAllAsync(): Promise<IExportAllResult> {
         return await executeWithTrackingAsync({
             event: {
-                action: 'Export',
+                action: 'export',
                 tool: 'model-accelerator',
                 version: packageVersion,
                 result: 'unknown',
