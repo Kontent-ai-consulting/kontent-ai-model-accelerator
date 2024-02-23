@@ -10,10 +10,10 @@ We recommend running data-ops with `npx`. Use `--help` anytime to get informatio
 options.
 
 ```bash
-npx @kontent-ai/content-model-accelerator --help
+npx @kontent-ai-consulting/content-model-accelerator --help
 
 # you can also install the package globally, or locally
-npm i @kontent-ai/content-model-accelerator -g
+npm i @kontent-ai-consulting/content-model-accelerator -g
 
 # with the package installed, you can call the tool as follows
 kontent-ai-accelerator --help
