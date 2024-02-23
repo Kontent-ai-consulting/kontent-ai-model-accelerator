@@ -15,7 +15,7 @@ import {
     IJsonTaxonomy,
     getEnvironmentInfoAsync,
     executeWithTrackingAsync,
-    packageVersion
+    eventPackage
 } from '../core/index.js';
 import { IImportConfig, IImportedData, ITargetEnvironmentData } from './import.models.js';
 import { logDebug } from '../core/log-helper.js';
@@ -50,12 +50,12 @@ export class ImportService {
         return await executeWithTrackingAsync({
             event: {
                 action: 'import',
-                tool: 'model-accelerator',
-                version: packageVersion,
+                package: eventPackage,
+                tool: 'contentModelAccelerator',
                 result: 'unknown',
                 relatedEnvironmentId: this.config.environmentId,
                 details: {
-                    metadata: data.exportJson.metadata,
+                    metadata: data.exportJson.metadata
                 }
             },
             func: async () => {

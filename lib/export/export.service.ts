@@ -13,7 +13,7 @@ import {
     ManagementClient,
     TaxonomyModels
 } from '@kontent-ai/management-sdk';
-import { packageVersion } from '../core/version.js';
+import { eventPackage } from '../core/version.js';
 
 export class ExportService {
     private readonly managementClient: ManagementClient;
@@ -34,8 +34,8 @@ export class ExportService {
         return await executeWithTrackingAsync({
             event: {
                 action: 'export',
-                tool: 'model-accelerator',
-                version: packageVersion,
+                tool: 'contentModelAccelerator',
+                package: eventPackage,
                 result: 'unknown',
                 relatedEnvironmentId: this.config.environmentId
             },
