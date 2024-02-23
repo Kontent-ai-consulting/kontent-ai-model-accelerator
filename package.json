@@ -1,6 +1,6 @@
 {
     "name": "@kontent-ai-consulting/model-accelerator",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "description": "This utility enables easy export / import of project structure's in Kontent.ai",
     "preferGlobal": true,
     "private": false,
@@ -23,6 +23,7 @@
         "test": "echo \"no global test configured\"",
         "release": "npm run lint && standard-version",
         "release:major": "npm run lint && standard-version --release-as major",
+        "release:minor": "npm run lint && standard-version --release-as minor",
         "release:major:beta": "npm run lint && standard-version --prerelease --release-as major",
         "release:beta": "standard-version --prerelease",
         "prepublishOnly": "npm run lint && npm run build",
