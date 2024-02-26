@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.3](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.2...v0.2.3) (2024-02-26)
+
+
+### Features
+
+* Use pregenerated metadata to avoid using experimental assert in deployed lib ([32a8291](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/32a829126480973e2ad15da017bad88c19ab4337))
+
 ### [0.2.2](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.1...v0.2.2) (2024-02-26)
 
 
