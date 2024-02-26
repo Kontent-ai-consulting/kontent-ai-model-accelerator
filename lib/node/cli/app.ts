@@ -19,7 +19,7 @@ import { getAcceleratorDataService } from '../../data/accelerator-data.service.j
 
 const argv = yargs(process.argv.slice(2))
     .example(
-        'kda --action=export --apiKey=xxx --environmentId=xxx',
+        'kontent-ai-accelerator --action=export --apiKey=xxx --environmentId=xxx',
         'Creates json export of content model from given environment'
     )
     .alias('e', 'environmentId')
