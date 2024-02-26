@@ -22,9 +22,9 @@
     "scripts": {
         "test": "echo \"no global test configured\"",
         "release": "npm run lint && standard-version && npm run update:version",
-        "release:major": "npm run lint && standard-version --release-as major",
-        "release:minor": "npm run lint && standard-version --release-as minor",
-        "release:major:beta": "npm run lint && standard-version --prerelease --release-as major",
+        "release:major": "npm run lint && standard-version --release-as major && npm run update:version",
+        "release:minor": "npm run lint && standard-version --release-as minor && npm run update:version",
+        "release:major:beta": "npm run lint && standard-version --prerelease --release-as major && npm run update:version",
         "release:beta": "standard-version --prerelease",
         "prepublishOnly": "npm run lint && npm run build",
         "publish:beta": "npm publish --tag=next",
