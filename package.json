@@ -5,7 +5,7 @@
     "preferGlobal": true,
     "private": false,
     "bin": {
-        "kontent-ai-accelerator": "./dist/es2022/lib/node/cli/app.js"
+        "kontent-ai-accelerator": "./dist/es2022/node/cli/app.js"
     },
     "repository": {
         "type": "git",
@@ -15,13 +15,13 @@
         "node": ">=18.0.0"
     },
     "author": "Richard Sustek",
-    "exports": "./dist/es2022/lib/index.js",
-    "types": "./dist/es2022/lib/index.d.ts",
+    "exports": "./dist/es2022/index.js",
+    "types": "./dist/es2022/index.d.ts",
     "type": "module",
     "directories": {},
     "scripts": {
         "test": "echo \"no global test configured\"",
-        "release": "npm run lint && standard-version",
+        "release": "npm run lint && standard-version && npm run update:version",
         "release:major": "npm run lint && standard-version --release-as major",
         "release:minor": "npm run lint && standard-version --release-as minor",
         "release:major:beta": "npm run lint && standard-version --prerelease --release-as major",
@@ -31,13 +31,14 @@
         "build:es2022": "tsc --p tsconfig.es2022.json",
         "build": "npm run clean && npm run build:es2022",
         "test:all": "npm run build",
-        "test:list": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --max-http-header-size=80000000 --action=list ",
-        "test:export": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --max-http-header-size=80000000 --config=export-config.json ",
-        "test:import:file": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --config=import-file-config.json",
-        "test:import:remote": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --config=import-remote-config.json",
-        "test:help": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/lib/node/cli/app --help",
+        "test:list": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --max-http-header-size=80000000 --action=list ",
+        "test:export": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --max-http-header-size=80000000 --config=export-config.json ",
+        "test:import:file": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --config=import-file-config.json",
+        "test:import:remote": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --config=import-remote-config.json",
+        "test:help": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --help",
         "lint": "npx eslint lib",
-        "clean": "node clean.js"
+        "clean": "node clean.js",
+        "update:version": "ts-node --project tsconfig.script.json ./scripts/version/update-version.ts"
     },
     "keywords": [
         "Kontent.ai",
@@ -47,23 +48,24 @@
     ],
     "license": "MIT",
     "dependencies": {
-        "@kontent-ai/management-sdk": "5.8.2",
-        "@kontent-ai/delivery-sdk": "14.6.0",
         "@kontent-ai-consulting/tools-analytics": "0.0.6",
+        "@kontent-ai/delivery-sdk": "14.6.0",
+        "@kontent-ai/management-sdk": "5.8.2",
         "colors": "1.4.0",
-        "yargs": "17.7.2",
-        "prompts": "2.4.2"
+        "prompts": "2.4.2",
+        "yargs": "17.7.2"
     },
     "devDependencies": {
-        "dotenv": "16.4.5",
-        "@types/prompts": "2.4.9",
         "@types/node": "20.11.19",
+        "@types/prompts": "2.4.9",
         "@types/yargs": "17.0.32",
         "@typescript-eslint/eslint-plugin": "7.0.2",
         "@typescript-eslint/parser": "7.0.2",
+        "dotenv": "16.4.5",
         "eslint": "8.56.0",
         "standard-version": "9.5.0",
         "ts-node": "10.9.2",
+        "tsconfig-paths": "^4.2.0",
         "tslib": "2.6.2",
         "typescript": "5.3.3"
     }

@@ -7,8 +7,6 @@
         "declaration": true,
         "moduleResolution": "NodeNext",
         "module": "NodeNext",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
         "target": "es2022",
         "strict": true,
@@ -24,8 +22,7 @@
         "noUnusedLocals": true,
         "strictFunctionTypes": true,
         "noImplicitAny": true,
-        "typeRoots": ["./node_modules/@types"],
-        "lib": ["esnext"]
+        "typeRoots": ["./node_modules/@types"]
     },
     "include": ["lib/**/*", "test/**/*", "samples"],
     "exclude": ["node_modules"]

@@ -13,7 +13,7 @@ import {
     ManagementClient,
     TaxonomyModels
 } from '@kontent-ai/management-sdk';
-import { eventPackage } from '../core/version.js';
+import { libMetadata } from '../metadata.js';
 
 export class ExportService {
     private readonly managementClient: ManagementClient;
@@ -35,7 +35,10 @@ export class ExportService {
             event: {
                 action: 'export',
                 tool: 'contentModelAccelerator',
-                package: eventPackage,
+                package: {
+                    name: libMetadata.name,
+                    version: libMetadata.version
+                },
                 result: 'unknown',
                 relatedEnvironmentId: this.config.environmentId
             },

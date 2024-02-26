@@ -14,8 +14,7 @@ import {
     IJsonContentTypeSnippet,
     IJsonTaxonomy,
     getEnvironmentInfoAsync,
-    executeWithTrackingAsync,
-    eventPackage
+    executeWithTrackingAsync
 } from '../core/index.js';
 import { IImportConfig, IImportedData, ITargetEnvironmentData } from './import.models.js';
 import { logDebug } from '../core/log-helper.js';
@@ -23,6 +22,7 @@ import { importContentTypesHelper } from './helpers/import-content-types.helper.
 import { IExportJson } from '../export/index.js';
 import { importContentTypeSnippetsHelper } from './helpers/import-content-type-snippets.helper.js';
 import { importTaxonomiesHelper } from './helpers/import-taxonomies.helper.js';
+import { libMetadata } from '../metadata.js';
 
 export class ImportService {
     private readonly managementClient: ManagementClient;
@@ -50,7 +50,10 @@ export class ImportService {
         return await executeWithTrackingAsync({
             event: {
                 action: 'import',
-                package: eventPackage,
+                package: {
+                    name: libMetadata.name,
+                    version: libMetadata.version
+                },
                 tool: 'contentModelAccelerator',
                 result: 'unknown',
                 relatedEnvironmentId: this.config.environmentId,
