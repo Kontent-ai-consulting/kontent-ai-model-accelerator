@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.5](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.4...v0.2.5) (2024-02-27)
+
+
+### Bug Fixes
+
+* properly display error messages ([2000da8](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/2000da811718e6bc95ebfdf59ffeb3c7af13927f))
+* typo ([ea7c349](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/ea7c349271b2101dc8ab07a0559f521f81f75263))
+
 ### [0.2.4](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.3...v0.2.4) (2024-02-26)
 
 
