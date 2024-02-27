@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.6](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.5...v0.2.6) (2024-02-27)
+
+
+### Bug Fixes
+
+* uses model instead of project naming ([19803fc](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/19803fc797170052c14fd2f122576e60d3c4517e))
+
 ### [0.2.5](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.4...v0.2.5) (2024-02-27)
 
 
