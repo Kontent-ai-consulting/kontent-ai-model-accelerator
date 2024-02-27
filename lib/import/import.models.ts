@@ -6,6 +6,7 @@ export interface IImportConfig {
     retryStrategy?: IRetryStrategyOptions;
     baseUrl?: string;
     environmentId: string;
+    debug: boolean;
 }
 
 export interface IImportedData {

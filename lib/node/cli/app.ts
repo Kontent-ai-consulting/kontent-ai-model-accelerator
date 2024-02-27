@@ -109,7 +109,8 @@ const importFromFile = async (config: ICliFileConfig) => {
     const importService = new ImportService({
         baseUrl: config.baseUrl,
         environmentId: config.environmentId,
-        apiKey: config.apiKey
+        apiKey: config.apiKey,
+        debug: config.debug ?? false
     });
 
     await confirmImportAsync({
@@ -153,7 +154,8 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
     const importService = new ImportService({
         baseUrl: config.baseUrl,
         environmentId: config.environmentId,
-        apiKey: config.apiKey
+        apiKey: config.apiKey,
+        debug: config.debug ?? false
     });
 
     await confirmImportAsync({
@@ -167,7 +169,9 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
     });
 
     const model = await acceleratorDataService.getAcceleratorModelByCodenameAsync(config.model);
+    console.log('TEST', model.codename);
     const exportJson = await acceleratorDataService.extractJsonFromModelAsync(model);
+    console.log('TEST 2', exportJson.metadata);
 
     await confirmDataToImportAsync({
         force: config.force,
@@ -275,11 +279,8 @@ run()
     .catch(async (error) => {
         try {
             const config = await getConfig();
-
-            if (config.debug) {
-                console.error(error);
-            }
+            handleError(error, config.debug ?? false);
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         }
     });

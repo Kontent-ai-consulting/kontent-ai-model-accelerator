@@ -38,7 +38,8 @@
         "test:help": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --help",
         "lint": "npx eslint lib",
         "clean": "node clean.js",
-        "update:version": "ts-node --project tsconfig.script.json ./scripts/version/update-version.ts"
+        "update:version": "ts-node --project tsconfig.script.json ./scripts/version/update-version.ts",
+        "test2": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app ./scripts/version/update-version.ts --action=remoteImport --environmentId=06f608f5-d75c-01f7-6c0d-d50a420d03a8 --apiKey=ew0KICAiYWxnIjogIkhTMjU2IiwNCiAgInR5cCI6ICJKV1QiDQp9.ew0KICAianRpIjogIjNkMGJmNGY3ZTg2MzRiYzM5M2UyMWRmNmEwZTJhODY0IiwNCiAgImlhdCI6ICIxNjk3NjIyMDg5IiwNCiAgImV4cCI6ICIxNzEzNDMzMjYwIiwNCiAgInZlciI6ICIzLjAuMCIsDQogICJ1aWQiOiAidXNyXzB2UVlCQ3FBdnJubzVyaWZIbmlZRUciLA0KICAicHJvamVjdF9jb250YWluZXJfaWQiOiAiOGE0NTI5NzJlMmQzMDE0MzVkNzI2ZDMyN2E4NGMxYjkiLA0KICAiYXVkIjogIm1hbmFnZS5rZW50aWNvY2xvdWQuY29tIg0KfQ.uXaQwa2-MIL_E84Loye17eV5NPgL5kWptT-vzOXB5cg --model=advanced_person"
     },
     "keywords": [
         "Kontent.ai",

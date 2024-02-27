@@ -80,7 +80,7 @@ export function extractErrorData(error: any): IErrorData {
     };
 }
 
-export function handleError(error: any): void {
+export function handleError(error: any, debug: boolean): void {
     const errorData = extractErrorData(error);
 
     if (errorData.requestUrl) {

@@ -57,7 +57,7 @@ export function logDebug(data: {
     }
 
     if (data.type === 'Error') {
-        data.message = `${data.message} | To see full error run CLI with --debug=true`;
+        data.message = `${data.message}`;
     }
 
     console.log(

@@ -142,7 +142,7 @@ export class ImportService {
                         message: 'Import finished'
                     });
                 } catch (error) {
-                    handleError(error);
+                    handleError(error, this.config.debug);
                 }
                 return importedData;
             }
