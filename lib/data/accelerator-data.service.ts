@@ -24,7 +24,7 @@ export class AcceleratorDataService {
         );
 
         if (!item) {
-            throw Error(`Could not find accelerator project with codename '${codename}'`);
+            throw Error(`Could not find accelerator model with codename '${codename}'`);
         }
 
         return item;
