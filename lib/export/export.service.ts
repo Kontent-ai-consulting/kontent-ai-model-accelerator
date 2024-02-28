@@ -4,7 +4,6 @@ import {
     defaultRetryStrategy,
     defaultHttpService,
     printEnvironmentInfoToConsoleAsync,
-    logDebug,
     executeWithTrackingAsync
 } from '../core/index.js';
 import {
@@ -43,24 +42,23 @@ export class ExportService {
                 relatedEnvironmentId: this.config.environmentId
             },
             func: async () => {
-                const environment = await printEnvironmentInfoToConsoleAsync(this.managementClient);
+                const environment = await printEnvironmentInfoToConsoleAsync(this.config.log, this.managementClient);
                 const contentTypes = await this.getContentTypesAsync();
-                logDebug({
+                this.config.log?.({
                     type: 'Fetch',
                     message: `Fetched '${colors.yellow(contentTypes.length.toString())}' content types`
                 });
 
                 const taxonomies = await this.getTaxonomiesAsync();
-                logDebug({
+                this.config.log?.({
                     type: 'Fetch',
                     message: `Fetched '${colors.yellow(taxonomies.length.toString())}' taxonomies`
                 });
 
                 const contentTypeSnippets = await this.getContentTypeSnippetsAsync();
-                logDebug({
+                this.config.log?.({
                     type: 'Fetch',
-                    message: `Fetched '${colors.yellow(contentTypeSnippets.length.toString())}' content type snippets`,
-                    partA: contentTypeSnippets.length.toString()
+                    message: `Fetched '${colors.yellow(contentTypeSnippets.length.toString())}' content type snippets`
                 });
 
                 const data: IExportData = {

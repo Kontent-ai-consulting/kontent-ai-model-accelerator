@@ -1,12 +1,13 @@
 import { IRetryStrategyOptions } from '@kontent-ai/core-sdk';
 import { ContentTypeModels, ContentTypeSnippetModels, TaxonomyModels } from '@kontent-ai/management-sdk';
-import { IJsonContentType, IJsonContentTypeSnippet, IJsonTaxonomy, IPackageMetadata } from 'lib/core/index.js';
+import { IJsonContentType, IJsonContentTypeSnippet, IJsonTaxonomy, IPackageMetadata, Log } from '../core/index.js';
 
 export interface IExportConfig {
     environmentId: string;
     apiKey: string;
     baseUrl?: string;
     retryStrategy?: IRetryStrategyOptions;
+    log?: Log;
 }
 
 export interface IExportData {

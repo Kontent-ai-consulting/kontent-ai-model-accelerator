@@ -17,12 +17,11 @@ import {
     executeWithTrackingAsync
 } from '../core/index.js';
 import { IImportConfig, IImportedData, ITargetEnvironmentData } from './import.models.js';
-import { logDebug } from '../core/log-helper.js';
-import { importContentTypesHelper } from './helpers/import-content-types.helper.js';
 import { IExportJson } from '../export/index.js';
-import { importContentTypeSnippetsHelper } from './helpers/import-content-type-snippets.helper.js';
-import { importTaxonomiesHelper } from './helpers/import-taxonomies.helper.js';
 import { libMetadata } from '../metadata.js';
+import { getImportTaxonomiesHelper } from './helpers/import-taxonomies.helper.js';
+import { getImportContentTypeSnippetsHelper } from './helpers/import-content-type-snippets.helper.js';
+import { getImportContentTypesHelper } from './helpers/import-content-types.helper.js';
 
 export class ImportService {
     private readonly managementClient: ManagementClient;
@@ -74,20 +73,22 @@ export class ImportService {
                 try {
                     //  Taxonomies
                     if (dataToImport.taxonomies.length) {
-                        logDebug({
+                        this.config.log?.({
                             type: 'Info',
                             message: `Preparing to import '${colors.yellow(
                                 dataToImport.taxonomies.length.toString()
                             )}' taxonomies`
                         });
-                        const importedTaxonomies = await importTaxonomiesHelper.importTaxonomiesAsync({
+                        const importedTaxonomies = await getImportTaxonomiesHelper(
+                            this.config.log
+                        ).importTaxonomiesAsync({
                             managementClient: this.managementClient,
                             existingData: existingData,
                             importTaxonomies: dataToImport.taxonomies
                         });
                         importedData.taxonomies.push(...importedTaxonomies);
                     } else {
-                        logDebug({
+                        this.config.log?.({
                             type: 'Info',
                             message: 'There are no taxonomies to import'
                         });
@@ -95,22 +96,23 @@ export class ImportService {
 
                     //  Content type snippets
                     if (dataToImport.contentTypeSnippets.length) {
-                        logDebug({
+                        this.config.log?.({
                             type: 'Info',
                             message: `Preparing to import '${colors.yellow(
                                 dataToImport.contentTypeSnippets.length.toString()
                             )}' content type snippets`
                         });
 
-                        const importedContentTypeSnippets =
-                            await importContentTypeSnippetsHelper.importContentTypeSnipppetsAsync({
-                                managementClient: this.managementClient,
-                                existingData: existingData,
-                                importContentTypeSnippets: dataToImport.contentTypeSnippets
-                            });
+                        const importedContentTypeSnippets = await getImportContentTypeSnippetsHelper(
+                            this.config.log
+                        ).importContentTypeSnipppetsAsync({
+                            managementClient: this.managementClient,
+                            existingData: existingData,
+                            importContentTypeSnippets: dataToImport.contentTypeSnippets
+                        });
                         importedData.contentTypeSnippets.push(...importedContentTypeSnippets);
                     } else {
-                        logDebug({
+                        this.config.log?.({
                             type: 'Info',
                             message: 'There are no content type snippets to import'
                         });
@@ -118,31 +120,33 @@ export class ImportService {
 
                     //  Content types
                     if (dataToImport.contentTypes.length) {
-                        logDebug({
+                        this.config.log?.({
                             type: 'Info',
                             message: `Preparing to import '${colors.yellow(
                                 dataToImport.contentTypes.length.toString()
                             )}' content types`
                         });
-                        const importedContentTypes = await importContentTypesHelper.importContentTypesAsync({
+                        const importedContentTypes = await getImportContentTypesHelper(
+                            this.config.log
+                        ).importContentTypesAsync({
                             managementClient: this.managementClient,
                             existingData: existingData,
                             importContentTypes: dataToImport.contentTypes
                         });
                         importedData.contentTypes.push(...importedContentTypes);
                     } else {
-                        logDebug({
+                        this.config.log?.({
                             type: 'Info',
                             message: 'There are no content types to import'
                         });
                     }
 
-                    logDebug({
+                    this.config.log?.({
                         type: 'Info',
                         message: 'Import finished'
                     });
                 } catch (error) {
-                    handleError(error, this.config.debug);
+                    handleError(error);
                 }
                 return importedData;
             }
@@ -177,10 +181,11 @@ export class ImportService {
                 if (foundContentType) {
                     contentTypesToImport.push(foundContentType);
                 } else {
-                    logDebug({
+                    this.config.log?.({
                         type: 'Warning',
-                        message: `Could not find content type with given codename`,
-                        partA: selectedContentTypeCodename
+                        message: `Could not find content type with codename '${colors.yellow(
+                            selectedContentTypeCodename
+                        )}'`
                     });
                 }
             }
@@ -200,10 +205,11 @@ export class ImportService {
                 if (foundContentTypeSnippet) {
                     contentTypeSnippetsToImport.push(foundContentTypeSnippet);
                 } else {
-                    logDebug({
+                    this.config.log?.({
                         type: 'Warning',
-                        message: `Could not find content type snippet with given codename`,
-                        partA: selectedContentTypeSnippetCodename
+                        message: `Could not find content type snippet with codename '${colors.yellow(
+                            selectedContentTypeSnippetCodename
+                        )}'`
                     });
                 }
             }
@@ -223,10 +229,9 @@ export class ImportService {
                 if (foundTaxonomy) {
                     taxonomiesToImport.push(foundTaxonomy);
                 } else {
-                    logDebug({
+                    this.config.log?.({
                         type: 'Warning',
-                        message: `Could not find taxonomy with given codename`,
-                        partA: selectedTaxonomyCodename
+                        message: `Could not find taxonomy with codename '${selectedTaxonomyCodename}'`
                     });
                 }
             }
@@ -244,7 +249,7 @@ export class ImportService {
             await this.managementClient.listContentTypes().toAllPromise()
         ).data.items;
 
-        logDebug({
+        this.config.log?.({
             type: 'Fetch',
             message: `Fetched '${colors.yellow(contentTypes.length.toString())}' existing content types`
         });
@@ -253,7 +258,7 @@ export class ImportService {
             await this.managementClient.listContentTypeSnippets().toAllPromise()
         ).data.items;
 
-        logDebug({
+        this.config.log?.({
             type: 'Fetch',
             message: `Fetched '${colors.yellow(contentTypeSnippets.length.toString())}' existing content type snippets`
         });
@@ -261,7 +266,7 @@ export class ImportService {
         const taxonomies: TaxonomyModels.Taxonomy[] = (await this.managementClient.listTaxonomies().toAllPromise()).data
             .items;
 
-        logDebug({
+        this.config.log?.({
             type: 'Fetch',
             message: `Fetched '${colors.yellow(taxonomies.length.toString())}' existing taxonomies`
         });

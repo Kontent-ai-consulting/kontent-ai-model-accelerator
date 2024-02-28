@@ -1,10 +1,16 @@
 import { ManagementClient, TaxonomyModels } from '@kontent-ai/management-sdk';
 import colors from 'colors';
-import { IJsonTaxonomy, logDebug } from '../../core/index.js';
+import { IJsonTaxonomy, Log } from '../../core/index.js';
 import { ITargetEnvironmentData } from '../import.models.js';
 import { guidHelper } from '../../helpers/index.js';
 
+export function getImportTaxonomiesHelper(log?: Log): ImportTaxonomiesHelper {
+    return new ImportTaxonomiesHelper(log);
+}
+
 export class ImportTaxonomiesHelper {
+    constructor(private readonly log?: Log) {}
+
     async importTaxonomiesAsync(data: {
         managementClient: ManagementClient;
         importTaxonomies: IJsonTaxonomy[];
@@ -16,19 +22,17 @@ export class ImportTaxonomiesHelper {
             const importResult = this.prepareImport(importTaxonomy, data.existingData);
 
             if (!importResult.canImport) {
-                logDebug({
+                this.log?.({
                     type: 'Skip',
-                    message: importResult.message,
-                    partA: importTaxonomy.codename
+                    message: importResult.message
                 });
 
                 continue;
             }
 
-            logDebug({
+            this.log?.({
                 type: 'Import',
-                message: importResult.message,
-                partA: importTaxonomy.codename
+                message: importResult.message
             });
 
             taxonomies.push(
@@ -55,7 +59,7 @@ export class ImportTaxonomiesHelper {
         if (existingData.taxonomies.find((m) => m.externalId === taxonomy.externalId)) {
             return {
                 canImport: false,
-                message: `Taxonomy with external id '${colors.yellow(taxonomy.externalId ?? '')}' already exists`
+                message: `Taxonomy with external id '${colors.yellow(taxonomy.externalId ?? '')}' (${colors.cyan(taxonomy.name)}) already exists`
             };
         } else if (existingData.taxonomies.find((m) => m.codename === taxonomy.codename)) {
             const newCodename: string = `${taxonomy.codename}_${guidHelper.shortGuid()}`;
@@ -63,13 +67,15 @@ export class ImportTaxonomiesHelper {
             return {
                 canImport: true,
                 newCodename: newCodename,
-                message: `Taxonomy with codename '${colors.yellow(taxonomy.codename)}' already exists. Using newly generated codename '${colors.cyan(newCodename)}' instead.`
+                message: `Taxonomy with codename '${colors.yellow(
+                    taxonomy.codename
+                )}' already exists. Using newly generated codename '${colors.cyan(newCodename)}' instead.`
             };
         }
 
         return {
             canImport: true,
-            message: 'Importing taxonomy'
+            message: `Importing taxonomy '${colors.yellow(taxonomy.name)}'`
         };
     }
 
@@ -85,5 +91,3 @@ export class ImportTaxonomiesHelper {
         };
     }
 }
-
-export const importTaxonomiesHelper = new ImportTaxonomiesHelper();

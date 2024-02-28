@@ -8,13 +8,13 @@ import {
     CliAction,
     handleError,
     confirmImportAsync,
-    confirmDataToImportAsync
+    confirmDataToImportAsync,
+    withDefaultLogAsync
 } from '../../core/index.js';
 import { ExportService } from '../../export/index.js';
 import { ImportService } from '../../import/index.js';
 import { FileProcessorService } from '../../file-processor/index.js';
-import { FileService } from '../file/file.service.js';
-import { logDebug } from '../../core/log-helper.js';
+import { getFileService } from '../file/file.service.js';
 import { getAcceleratorDataService } from '../../data/accelerator-data.service.js';
 
 const argv = yargs(process.argv.slice(2))
@@ -46,148 +46,160 @@ const argv = yargs(process.argv.slice(2))
     .alias('h', 'help').argv;
 
 const listRemoteAcceleratorsAsync = async () => {
-    const accelerators = await getAcceleratorDataService().getAllAcceleratorsAsync();
+    await withDefaultLogAsync(async (log) => {
+        const accelerators = await getAcceleratorDataService().getAllAcceleratorsAsync();
 
-    logDebug({
-        type: 'Fetch',
-        message: `Fetched '${colors.yellow(accelerators.length.toString())}' accelerator models`
-    });
-
-    for (const accelerator of accelerators) {
-        logDebug({
-            type: null,
-            message: `${accelerator.name}`,
-            partA: accelerator.codename
+        log({
+            type: 'Fetch',
+            message: `Fetched '${colors.yellow(accelerators.length.toString())}' accelerator models`
         });
-    }
 
-    logDebug({
-        type: 'Complete',
-        message: `All accelerator models listed`
+        for (const accelerator of accelerators) {
+            log({
+                type: 'Model',
+                message: `${accelerator.name}`
+            });
+        }
+
+        log({
+            type: 'Completed',
+            message: `All accelerator models listed`
+        });
     });
 };
 
 const exportAsync = async (config: ICliFileConfig) => {
-    if (!config.environmentId) {
-        throw Error('Invalid environmentId');
-    }
-    if (!config.apiKey) {
-        throw Error('Invalid apiKey');
-    }
+    await withDefaultLogAsync(async (log) => {
+        if (!config.environmentId) {
+            throw Error('Invalid environmentId');
+        }
+        if (!config.apiKey) {
+            throw Error('Invalid apiKey');
+        }
 
-    const filename: string = getDefaultFilename(config.filename);
-    const fileProcessorService = new FileProcessorService();
-    const exportService = new ExportService({
-        environmentId: config.environmentId,
-        apiKey: config.apiKey,
-        baseUrl: config.baseUrl
-    });
+        const filename: string = getDefaultFilename(config.filename);
+        const fileProcessorService = new FileProcessorService();
+        const exportService = new ExportService({
+            log: log,
+            environmentId: config.environmentId,
+            apiKey: config.apiKey,
+            baseUrl: config.baseUrl
+        });
 
-    const fileService = new FileService();
-    const exportedData = await exportService.exportAllAsync();
+        const fileService = getFileService(log);
+        const exportedData = await exportService.exportAllAsync();
 
-    await fileService.writeFileAsync(filename, await fileProcessorService.mapExportToJsonAsync(exportedData));
+        await fileService.writeFileAsync(filename, await fileProcessorService.mapExportToJsonAsync(exportedData));
 
-    logDebug({
-        type: 'Complete',
-        message: `Export finished successfully`
+        log({
+            type: 'Completed',
+            message: `Export finished successfully`
+        });
     });
 };
 
 const importFromFile = async (config: ICliFileConfig) => {
-    const filename: string = getDefaultFilename(config.filename);
-    const fileProcessorService = new FileProcessorService();
-    const fileService = new FileService();
+    await withDefaultLogAsync(async (log) => {
+        const filename: string = getDefaultFilename(config.filename);
+        const fileProcessorService = new FileProcessorService();
+        const fileService = getFileService(log);
 
-    if (!config.environmentId) {
-        throw Error('Invalid environmentId');
-    }
-    if (!config.apiKey) {
-        throw Error('Invalid apiKey');
-    }
+        if (!config.environmentId) {
+            throw Error('Invalid environmentId');
+        }
+        if (!config.apiKey) {
+            throw Error('Invalid apiKey');
+        }
 
-    const importService = new ImportService({
-        baseUrl: config.baseUrl,
-        environmentId: config.environmentId,
-        apiKey: config.apiKey,
-        debug: config.debug ?? false
-    });
+        const importService = new ImportService({
+            log: log,
+            baseUrl: config.baseUrl,
+            environmentId: config.environmentId,
+            apiKey: config.apiKey,
+            debug: config.debug ?? false
+        });
 
-    await confirmImportAsync({
-        force: config.force,
-        importService: importService
-    });
+        await confirmImportAsync({
+            log: log,
+            force: config.force,
+            importService: importService
+        });
 
-    const itemsFile = await fileService.loadFileAsync(filename);
-    const extractedData = await fileProcessorService.extractJsonFileAsync(itemsFile);
+        const itemsFile = await fileService.loadFileAsync(filename);
+        const extractedData = await fileProcessorService.extractJsonFileAsync(itemsFile);
 
-    await confirmDataToImportAsync({
-        force: config.force,
-        exportJson: extractedData
-    });
+        await confirmDataToImportAsync({
+            log: log,
+            force: config.force,
+            exportJson: extractedData
+        });
 
-    await importService.importAsync({
-        exportJson: extractedData,
-        selectedContentTypes: config.contentTypes ?? [],
-        selectedContentTypeSnippets: config.contentTypeSnippets ?? [],
-        selectedTaxonomies: config.taxonomies ?? []
-    });
+        await importService.importAsync({
+            exportJson: extractedData,
+            selectedContentTypes: config.contentTypes ?? [],
+            selectedContentTypeSnippets: config.contentTypeSnippets ?? [],
+            selectedTaxonomies: config.taxonomies ?? []
+        });
 
-    logDebug({
-        type: 'Complete',
-        message: `Import finished successfully`
+        log({
+            type: 'Completed',
+            message: `Import finished successfully`
+        });
     });
 };
 
 const importFromRemoteAsync = async (config: ICliFileConfig) => {
-    if (!config.environmentId) {
-        throw Error('Invalid environmentId');
-    }
-    if (!config.apiKey) {
-        throw Error('Invalid apiKey');
-    }
-    if (!config.model) {
-        throw Error('Invalid remote model');
-    }
+    await withDefaultLogAsync(async (log) => {
+        if (!config.environmentId) {
+            throw Error('Invalid environmentId');
+        }
+        if (!config.apiKey) {
+            throw Error('Invalid apiKey');
+        }
+        if (!config.model) {
+            throw Error('Invalid remote model');
+        }
 
-    const acceleratorDataService = getAcceleratorDataService();
-    const importService = new ImportService({
-        baseUrl: config.baseUrl,
-        environmentId: config.environmentId,
-        apiKey: config.apiKey,
-        debug: config.debug ?? false
-    });
+        const acceleratorDataService = getAcceleratorDataService();
+        const importService = new ImportService({
+            log: log,
+            baseUrl: config.baseUrl,
+            environmentId: config.environmentId,
+            apiKey: config.apiKey,
+            debug: config.debug ?? false
+        });
 
-    await confirmImportAsync({
-        force: config.force,
-        importService: importService
-    });
+        await confirmImportAsync({
+            log: log,
+            force: config.force,
+            importService: importService
+        });
 
-    logDebug({
-        type: 'Fetch',
-        message: `Downloading template '${colors.yellow(config.model)}'`
-    });
+        log({
+            type: 'Fetch',
+            message: `Downloading template '${colors.cyan(config.model)}'`
+        });
 
-    const model = await acceleratorDataService.getAcceleratorModelByCodenameAsync(config.model);
-    console.log('TEST', model.codename);
-    const exportJson = await acceleratorDataService.extractJsonFromModelAsync(model);
-    console.log('TEST 2', exportJson.metadata);
+        const model = await acceleratorDataService.getAcceleratorModelByCodenameAsync(config.model);
+        const exportJson = await acceleratorDataService.extractJsonFromModelAsync(model);
 
-    await confirmDataToImportAsync({
-        force: config.force,
-        exportJson: exportJson
-    });
+        await confirmDataToImportAsync({
+            log: log,
+            force: config.force,
+            exportJson: exportJson
+        });
 
-    await importService.importAsync({
-        exportJson: exportJson,
-        selectedContentTypes: config.contentTypes ?? [],
-        selectedContentTypeSnippets: config.contentTypeSnippets ?? [],
-        selectedTaxonomies: config.taxonomies ?? []
-    });
+        await importService.importAsync({
+            exportJson: exportJson,
+            selectedContentTypes: config.contentTypes ?? [],
+            selectedContentTypeSnippets: config.contentTypeSnippets ?? [],
+            selectedTaxonomies: config.taxonomies ?? []
+        });
 
-    logDebug({
-        type: 'Complete',
-        message: `Import finished successfully`
+        log({
+            type: 'Completed',
+            message: `Import finished successfully`
+        });
     });
 };
 
@@ -277,10 +289,5 @@ const getConfig = async () => {
 run()
     .then((m) => {})
     .catch(async (error) => {
-        try {
-            const config = await getConfig();
-            handleError(error, config.debug ?? false);
-        } catch (error) {
-            handleError(error, true);
-        }
+        handleError(error);
     });

@@ -1,7 +1,7 @@
 import { IManagementClient, EnvironmentModels, SharedModels } from '@kontent-ai/management-sdk';
 import colors from 'colors';
 
-import { exitProcess, logDebug, logErrorAndExit } from './log-helper.js';
+import { Log, exitProcess, logErrorAndExit } from './log-helper.js';
 
 import { DeliveryError } from '@kontent-ai/delivery-sdk';
 import prompts from 'prompts';
@@ -34,11 +34,12 @@ export function is404Error(error: any): boolean {
 }
 
 export async function printEnvironmentInfoToConsoleAsync(
+    log: Log | undefined,
     client: IManagementClient<any>
 ): Promise<EnvironmentModels.EnvironmentInformationModel> {
     const environmentInformation = await getEnvironmentInfoAsync(client);
 
-    logDebug({
+    log?.({
         type: 'Info',
         message: `Using environment '${colors.yellow(environmentInformation.environment)}' from project '${colors.cyan(
             environmentInformation.name
@@ -80,35 +81,26 @@ export function extractErrorData(error: any): IErrorData {
     };
 }
 
-export function handleError(error: any, debug: boolean): void {
+export function handleError(error: any): void {
     const errorData = extractErrorData(error);
 
-    if (errorData.requestUrl) {
-        logDebug({
-            type: 'Error',
-            message: errorData.requestUrl,
-            partA: 'Request Url'
-        });
-    }
-
-    if (errorData.requestData) {
-        logDebug({
-            type: 'Error',
-            message: errorData.requestData,
-            partA: 'Request Data'
-        });
-    }
+    console.log(`${colors.red('Request url')}: ${errorData.requestUrl}`);
+    console.log(`${colors.red('Request data')}: ${errorData.requestData}`);
 
     logErrorAndExit({
         message: errorData.message
     });
 }
 
-export async function confirmImportAsync(data: { force: boolean; importService: ImportService }): Promise<void> {
+export async function confirmImportAsync(data: {
+    log?: Log;
+    force: boolean;
+    importService: ImportService;
+}): Promise<void> {
     const targetEnvironment = await data.importService.getEnvironmentInfoAsync();
 
     if (data.force) {
-        logDebug({
+        data.log?.({
             type: 'Info',
             message: `Skipping target environment confirmation due to the use of force param`
         });
@@ -122,7 +114,7 @@ export async function confirmImportAsync(data: { force: boolean; importService: 
         });
 
         if (!confirmed.confirm) {
-            logDebug({
+            data.log?.({
                 type: 'Cancel',
                 message: `Confirmation refused. Exiting process.`
             });
@@ -130,43 +122,44 @@ export async function confirmImportAsync(data: { force: boolean; importService: 
         }
     }
 }
-export async function confirmDataToImportAsync(data: { force: boolean; exportJson: IExportJson }): Promise<void> {
+export async function confirmDataToImportAsync(data: {
+    log?: Log;
+    force: boolean;
+    exportJson: IExportJson;
+}): Promise<void> {
     if (data.force) {
-        logDebug({
+        data.log?.({
             type: 'Info',
             message: `Skipping data confirmation due to the use of force param`
         });
     } else {
         if (data.exportJson.metadata.environment) {
-            logDebug({
+            data.log?.({
                 type: 'Model',
-                message: `${colors.yellow(data.exportJson.metadata.environment)}`
+                message: `${(data.exportJson.metadata.environment)}`
             });
         }
-        logDebug({
+        data.log?.({
             type: 'Content Types',
-            message: `${data.exportJson.contentTypes?.map((m) => m.name)?.join(', ')}`,
-            partA: (data.exportJson.contentTypes?.length ?? 0).toString()
+            message: `${data.exportJson.contentTypes?.map((m) => m.name)?.join(', ')}`
         });
-        logDebug({
+        data.log?.({
             type: 'Snippets',
-            message: `${data.exportJson.contentTypeSnippets?.map((m) => m.name)?.join(', ')}`,
-            partA: (data.exportJson.contentTypeSnippets?.length ?? 0).toString()
+            message: `${data.exportJson.contentTypeSnippets?.map((m) => m.name)?.join(', ')}`
         });
-        logDebug({
+        data.log?.({
             type: 'Taxonomies',
-            message: `${data.exportJson.taxonomies?.map((m) => m.name)?.join(', ')}`,
-            partA: (data.exportJson.taxonomies?.length ?? 0).toString()
+            message: `${data.exportJson.taxonomies?.map((m) => m.name)?.join(', ')}`
         });
 
         const confirmed = await prompts({
             type: 'confirm',
             name: 'confirm',
-            message: `Are you sure to import models above into target environment?`
+            message: `Continue import with the models above?`
         });
 
         if (!confirmed.confirm) {
-            logDebug({
+            data.log?.({
                 type: 'Cancel',
                 message: `Confirmation refused. Exiting process.`
             });

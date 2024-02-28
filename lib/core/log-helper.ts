@@ -1,4 +1,13 @@
-import colors, { Color } from 'colors';
+import colors from 'colors';
+
+export type Log = (data: {
+    type: LogType;
+    message: string;
+    count?: {
+        index: number;
+        total: number;
+    };
+}) => void;
 
 export type LogType =
     | 'Error'
@@ -15,14 +24,10 @@ export type LogType =
     | 'Taxonomies'
     | 'Snippets'
     | 'Model'
-    | 'Complete'
-    | null;
+    | 'Completed';
 
 export function logErrorAndExit(data: { message: string }): never {
-    logDebug({
-        type: 'Error',
-        message: data.message
-    });
+    console.log(`${colors.red('Error: ')} ${data.message}`);
     exitProcess();
 }
 
@@ -30,41 +35,26 @@ export function exitProcess(): never {
     process.exit(1);
 }
 
-export function logDebug(data: {
-    type: LogType;
-    message: string;
-    partA?: string;
-    partB?: string;
-    performance?: string;
-}): void {
-    let typeColor: Color = colors.green;
-    const typeBgColor: Color = colors.bgBlack;
+export async function withDefaultLogAsync(func: (log: Log) => Promise<void>): Promise<void> {
+    const log = getDefaultLog();
+    await func(log);
+}
 
-    if (data.type === 'Error') {
-        typeColor = colors.red;
-    } else if (data.type === 'Info') {
-        typeColor = colors.cyan;
-    } else if (data.type === 'Import') {
-        typeColor = colors.yellow;
-    } else if (data.type === 'Skip') {
-        typeColor = colors.magenta;
-    } else if (data.type === 'Export') {
-        typeColor = colors.yellow;
-    } else if (data.type === 'Warning') {
-        typeColor = colors.red;
-    } else if (data.type === 'Cancel') {
-        typeColor = colors.red;
-    }
+function getDefaultLog(): Log {
+    return (data) => {
+        let typeColor = colors.yellow;
 
-    if (data.type === 'Error') {
-        data.message = `${data.message}`;
-    }
+        if (data.type === 'Info') {
+            typeColor = colors.cyan;
+        } else if (data.type === 'Error' || data.type === 'Warning' || data.type === 'Cancel') {
+            typeColor = colors.red;
+        } else if (data.type === 'Completed') {
+            typeColor = colors.green;
+        } else if (data.type === 'Skip') {
+            typeColor = colors.gray;
+        }
 
-    console.log(
-        `${data.type ? `[${typeBgColor(typeColor(data.type))}]` : ''}${
-            data.partA ? `[${colors.yellow(data.partA)}]` : ''
-        }${data.partB ? `[${colors.cyan(data.partB)}]` : ''}${
-            data.performance ? `[${colors.bgYellow(colors.black(data.performance))}]` : ''
-        }: ${data.message}`
-    );
+        const message = `${typeColor(data.type)}: ${data.message}`;
+        console.log(message);
+    };
 }
