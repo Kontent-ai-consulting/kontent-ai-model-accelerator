@@ -1,6 +1,6 @@
 {
     "name": "@kontent-ai-consulting/content-model-accelerator",
-    "version": "0.2.9",
+    "version": "0.2.10",
     "description": "This utility enables easy export / import of project structure's in Kontent.ai",
     "preferGlobal": true,
     "private": false,
