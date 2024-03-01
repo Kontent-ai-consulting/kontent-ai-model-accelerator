@@ -27,7 +27,7 @@ export type LogType =
     | 'Completed';
 
 export function logErrorAndExit(data: { message: string }): never {
-    console.log(`${colors.red('Error: ')} ${data.message}`);
+    console.log(`${colors.red('Error:')} ${data.message}`);
     exitProcess();
 }
 

@@ -84,8 +84,12 @@ export function extractErrorData(error: any): IErrorData {
 export function handleError(error: any): void {
     const errorData = extractErrorData(error);
 
-    console.log(`${colors.red('Request url')}: ${errorData.requestUrl}`);
-    console.log(`${colors.red('Request data')}: ${errorData.requestData}`);
+    if (errorData.requestUrl) {
+        console.log(`${colors.red('Request url')}: ${errorData.requestUrl}`);
+    }
+    if (errorData.requestData) {
+        console.log(`${colors.red('Request data')}: ${errorData.requestData}`);
+    }
 
     logErrorAndExit({
         message: errorData.message
@@ -136,7 +140,7 @@ export async function confirmDataToImportAsync(data: {
         if (data.exportJson.metadata.environment) {
             data.log?.({
                 type: 'Model',
-                message: `${(data.exportJson.metadata.environment)}`
+                message: `${data.exportJson.metadata.environment}`
             });
         }
         data.log?.({
