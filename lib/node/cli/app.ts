@@ -58,7 +58,7 @@ const listRemoteAcceleratorsAsync = async () => {
         for (const accelerator of accelerators) {
             log({
                 type: 'Model',
-                message: `${accelerator.name}`
+                message: `${accelerator.name} (codename: ${colors.cyan(accelerator.codename)})`
             });
         }
 
