@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.11](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.10...v0.2.11) (2024-03-01)
+
+
+### Features
+
+* auto-include used taxonomies / snippets when importing only selected types & snippets ([1ac5eb2](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/1ac5eb202d19c4e84af61501f72cdd26f9ea5c96))
+
 ### [0.2.10](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.9...v0.2.10) (2024-03-01)
 
 
