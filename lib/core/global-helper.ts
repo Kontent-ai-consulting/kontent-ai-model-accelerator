@@ -8,11 +8,18 @@ import prompts from 'prompts';
 import { ImportService } from '../import/index.js';
 import { IExportJson } from '../export/index.js';
 import { ITrackingEventData, getTrackingService } from '@kontent-ai-consulting/tools-analytics';
+import { IJsonContentType, IJsonContentTypeSnippet, IJsonTaxonomy, IPackageMetadata } from './core.models.js';
 
 export interface IErrorData {
     message: string;
     requestData?: string;
     requestUrl?: string;
+}
+
+export interface IFilteredSelectedObjects {
+    contentTypes: IJsonContentType[];
+    contentTypeSnippets: IJsonContentTypeSnippet[];
+    taxonomies: IJsonTaxonomy[];
 }
 
 export function sleepAsync(ms: number): Promise<void> {
@@ -120,7 +127,7 @@ export async function confirmImportAsync(data: {
         if (!confirmed.confirm) {
             data.log?.({
                 type: 'Cancel',
-                message: `Confirmation refused. Exiting process.`
+                message: `Confirmation refused.`
             });
             exitProcess();
         }
@@ -129,7 +136,8 @@ export async function confirmImportAsync(data: {
 export async function confirmDataToImportAsync(data: {
     log?: Log;
     force: boolean;
-    exportJson: IExportJson;
+    metadata: IPackageMetadata;
+    dataToImport: IFilteredSelectedObjects;
 }): Promise<void> {
     if (data.force) {
         data.log?.({
@@ -137,35 +145,41 @@ export async function confirmDataToImportAsync(data: {
             message: `Skipping data confirmation due to the use of force param`
         });
     } else {
-        if (data.exportJson.metadata.environment) {
+        if (data.metadata.environment) {
             data.log?.({
                 type: 'Model',
-                message: `${data.exportJson.metadata.environment}`
+                message: `${data.metadata.environment}`
             });
         }
         data.log?.({
             type: 'Content Types',
-            message: `${data.exportJson.contentTypes?.map((m) => m.name)?.join(', ')}`
+            message: data.dataToImport.contentTypes.length
+                ? data.dataToImport.contentTypes.map((m) => m.name)?.join(', ')
+                : colors.gray('none')
         });
         data.log?.({
             type: 'Snippets',
-            message: `${data.exportJson.contentTypeSnippets?.map((m) => m.name)?.join(', ')}`
+            message: data.dataToImport.contentTypeSnippets.length
+                ? data.dataToImport.contentTypeSnippets.map((m) => m.name)?.join(', ')
+                : colors.gray('none')
         });
         data.log?.({
             type: 'Taxonomies',
-            message: `${data.exportJson.taxonomies?.map((m) => m.name)?.join(', ')}`
+            message: data.dataToImport.taxonomies.length
+                ? data.dataToImport.taxonomies.map((m) => m.name)?.join(', ')
+                : colors.gray('none')
         });
 
         const confirmed = await prompts({
             type: 'confirm',
             name: 'confirm',
-            message: `Continue import with the models above?`
+            message: `Import the models above into target environment?`
         });
 
         if (!confirmed.confirm) {
             data.log?.({
                 type: 'Cancel',
-                message: `Confirmation refused. Exiting process.`
+                message: `Confirmation refused.`
             });
             exitProcess();
         }
@@ -196,4 +210,70 @@ export async function executeWithTrackingAsync<TResult>(data: {
 
         throw error;
     }
+}
+
+export function filterSelectedObjectsToImport(data: {
+    selectedContentTypes: string[];
+    selectedContentTypeSnippets: string[];
+    selectedTaxonomies: string[];
+    exportJson: IExportJson;
+}): IFilteredSelectedObjects {
+    const importAll: boolean =
+        !data.selectedContentTypeSnippets.length && !data.selectedContentTypes && !data.selectedTaxonomies;
+
+    if (importAll) {
+        return {
+            contentTypeSnippets: data.exportJson.contentTypeSnippets ?? [],
+            contentTypes: data.exportJson.contentTypes ?? [],
+            taxonomies: data.exportJson.taxonomies ?? []
+        };
+    }
+
+    const contentTypesToImport: IJsonContentType[] = [];
+    const contentTypeSnippetsToImport: IJsonContentTypeSnippet[] = [];
+    const taxonomiesToImport: IJsonTaxonomy[] = [];
+
+    for (const selectedContentType of data.selectedContentTypes) {
+        const exportContentType = data.exportJson.contentTypes?.find(
+            (m) => m.codename.toLowerCase() === selectedContentType.toLowerCase()
+        );
+
+        if (!exportContentType) {
+            throw Error(`Invalid selected content type with codename '${colors.yellow(selectedContentType)}'`);
+        }
+
+        contentTypesToImport.push(exportContentType);
+    }
+
+    for (const selectedContentTypeSnippet of data.selectedContentTypeSnippets) {
+        const exportContentTypeSnippet = data.exportJson.contentTypeSnippets?.find(
+            (m) => m.codename.toLowerCase() === selectedContentTypeSnippet.toLowerCase()
+        );
+
+        if (!exportContentTypeSnippet) {
+            throw Error(
+                `Invalid selected content type snippet with codename '${colors.yellow(selectedContentTypeSnippet)}'`
+            );
+        }
+
+        contentTypeSnippetsToImport.push(exportContentTypeSnippet);
+    }
+
+    for (const selectedTaxonomy of data.selectedTaxonomies) {
+        const exportTaxonomy = data.exportJson.taxonomies?.find(
+            (m) => m.codename.toLowerCase() === selectedTaxonomy.toLowerCase()
+        );
+
+        if (!exportTaxonomy) {
+            throw Error(`Invalid selected taxonomy codename '${colors.yellow(selectedTaxonomy)}'`);
+        }
+
+        taxonomiesToImport.push(exportTaxonomy);
+    }
+
+    return {
+        contentTypeSnippets: contentTypeSnippetsToImport,
+        contentTypes: contentTypesToImport,
+        taxonomies: taxonomiesToImport
+    };
 }

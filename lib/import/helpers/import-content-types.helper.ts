@@ -24,16 +24,15 @@ export class ImportContentTypesHelper {
             if (!importResult.canImport) {
                 this.log?.({
                     type: 'Skip',
-                    message: importResult.message,
+                    message: importResult.message
                 });
                 continue;
             }
 
-         this.log?.({
-             type: 'Import',
-             message: importResult.message,
-
-         });
+            this.log?.({
+                type: 'Import',
+                message: importResult.message
+            });
 
             contentTypes.push(
                 (
@@ -67,9 +66,9 @@ export class ImportContentTypesHelper {
         if (existingData.contentTypes.find((m) => m.externalId === type.externalId)) {
             return {
                 canImport: false,
-                message: `Content type with external id '${colors.yellow(
+                message: `Content type ${colors.cyan(type.name)} already exists (external id: ${colors.yellow(
                     type.externalId
-                )}' already exists (${colors.cyan(type.name)})`
+                )})`
             };
         } else if (existingData.contentTypes.find((m) => m.codename === type.codename)) {
             const newCodename: string = `${type.codename}_${guidHelper.shortGuid()}`;
@@ -89,4 +88,3 @@ export class ImportContentTypesHelper {
         };
     }
 }
-

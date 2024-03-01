@@ -9,7 +9,8 @@ import {
     handleError,
     confirmImportAsync,
     confirmDataToImportAsync,
-    withDefaultLogAsync
+    withDefaultLogAsync,
+    filterSelectedObjectsToImport
 } from '../../core/index.js';
 import { ExportService } from '../../export/index.js';
 import { ImportService } from '../../import/index.js';
@@ -126,19 +127,24 @@ const importFromFile = async (config: ICliFileConfig) => {
         });
 
         const itemsFile = await fileService.loadFileAsync(filename);
-        const extractedData = await fileProcessorService.extractJsonFileAsync(itemsFile);
+        const exportJson = await fileProcessorService.extractJsonFileAsync(itemsFile);
+
+        const dataToImport = filterSelectedObjectsToImport({
+            exportJson: exportJson,
+            selectedContentTypes: config.contentTypes ?? [],
+            selectedContentTypeSnippets: config.contentTypeSnippets ?? [],
+            selectedTaxonomies: config.taxonomies ?? []
+        });
 
         await confirmDataToImportAsync({
             log: log,
             force: config.force,
-            exportJson: extractedData
+            dataToImport: dataToImport,
+            metadata: exportJson.metadata
         });
-
         await importService.importAsync({
-            exportJson: extractedData,
-            selectedContentTypes: config.contentTypes ?? [],
-            selectedContentTypeSnippets: config.contentTypeSnippets ?? [],
-            selectedTaxonomies: config.taxonomies ?? []
+            exportJson: exportJson,
+            dataToImport: dataToImport
         });
 
         log({
@@ -183,17 +189,23 @@ const importFromRemoteAsync = async (config: ICliFileConfig) => {
         const model = await acceleratorDataService.getAcceleratorModelByCodenameAsync(config.model);
         const exportJson = await acceleratorDataService.extractJsonFromModelAsync(model);
 
-        await confirmDataToImportAsync({
-            log: log,
-            force: config.force,
-            exportJson: exportJson
-        });
-
-        await importService.importAsync({
+        const dataToImport = filterSelectedObjectsToImport({
             exportJson: exportJson,
             selectedContentTypes: config.contentTypes ?? [],
             selectedContentTypeSnippets: config.contentTypeSnippets ?? [],
             selectedTaxonomies: config.taxonomies ?? []
+        });
+
+        await confirmDataToImportAsync({
+            log: log,
+            force: config.force,
+            dataToImport: dataToImport,
+            metadata: exportJson.metadata
+        });
+
+        await importService.importAsync({
+            exportJson: exportJson,
+            dataToImport: dataToImport
         });
 
         log({

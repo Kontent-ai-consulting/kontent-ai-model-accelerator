@@ -65,9 +65,9 @@ export class ImportContentTypeSnippetsHelper {
         if (existingData.contentTypeSnippets.find((m) => m.externalId === snippet.externalId)) {
             return {
                 canImport: false,
-                message: `Snippet with external id '${colors.yellow(snippet.externalId)}' (${colors.cyan(
+                message: `Content type snippet ${colors.cyan(
                     snippet.name
-                )}) already exists`
+                )} already exists (external id: ${colors.yellow(snippet.externalId)})`
             };
         } else if (existingData.contentTypeSnippets.find((m) => m.codename === snippet.codename)) {
             const newCodename: string = `${snippet.codename}_${guidHelper.shortGuid()}`;

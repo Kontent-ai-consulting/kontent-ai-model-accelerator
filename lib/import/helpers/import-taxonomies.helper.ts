@@ -59,7 +59,9 @@ export class ImportTaxonomiesHelper {
         if (existingData.taxonomies.find((m) => m.externalId === taxonomy.externalId)) {
             return {
                 canImport: false,
-                message: `Taxonomy with external id '${colors.yellow(taxonomy.externalId ?? '')}' (${colors.cyan(taxonomy.name)}) already exists`
+                message: `Taxonomy ${colors.cyan(taxonomy.name)} already exists (external id: ${colors.yellow(
+                    taxonomy.externalId ?? ''
+                )})`
             };
         } else if (existingData.taxonomies.find((m) => m.codename === taxonomy.codename)) {
             const newCodename: string = `${taxonomy.codename}_${guidHelper.shortGuid()}`;
