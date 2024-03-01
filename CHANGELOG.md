@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.9](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.8...v0.2.9) (2024-03-01)
+
+
+### Features
+
+* display request url / data only when set ([92d61b8](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/92d61b8c9574a90ebe214ecbed7a2ca54e3dee8a))
+* improves displayed objects when confirming data to import, only import selected objects when using filters, improved logging ([6edd2a0](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/6edd2a09ee0e73c714c5794c63ac73ac32f6a8c6))
+* updates deps ([7fcf8aa](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/7fcf8aa117bf70c2ed09b6973868ce88b950ea23))
+
 ### [0.2.8](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.7...v0.2.8) (2024-02-28)
 
 ### [0.2.7](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v0.2.6...v0.2.7) (2024-02-28)
