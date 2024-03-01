@@ -1,4 +1,4 @@
-import { IManagementClient, EnvironmentModels, SharedModels } from '@kontent-ai/management-sdk';
+import { IManagementClient, EnvironmentModels, SharedModels, ContentTypeElements } from '@kontent-ai/management-sdk';
 import colors from 'colors';
 
 import { Log, exitProcess, logErrorAndExit } from './log-helper.js';
@@ -243,6 +243,41 @@ export function filterSelectedObjectsToImport(data: {
         }
 
         contentTypesToImport.push(exportContentType);
+
+        // when selected content type is used, also import all used taxonomies / snippets within the type
+        for (const element of exportContentType.elements) {
+            if (element.type === 'snippet') {
+                const snippetElement = element as ContentTypeElements.ISnippetElement;
+                const embeddedSnippet = data.exportJson.contentTypeSnippets?.find(
+                    (m) => m.externalId?.toLowerCase() === snippetElement.snippet.external_id?.toLowerCase()
+                );
+
+                if (!embeddedSnippet) {
+                    throw Error(
+                        `Invalid snippet with external id '${colors.yellow(
+                            snippetElement.snippet.external_id ?? ''
+                        )}' used within content type '${colors.yellow(selectedContentType)}'`
+                    );
+                }
+
+                contentTypeSnippetsToImport.push(embeddedSnippet);
+            } else if (element.type === 'taxonomy') {
+                const taxonomyElement = element as ContentTypeElements.ITaxonomyElement;
+                const embeddedTaxonomy = data.exportJson.taxonomies?.find(
+                    (m) => m.externalId?.toLowerCase() === taxonomyElement.taxonomy_group.external_id?.toLowerCase()
+                );
+
+                if (!embeddedTaxonomy) {
+                    throw Error(
+                        `Invalid taxonomy with external id '${colors.yellow(
+                            taxonomyElement.taxonomy_group.external_id ?? ''
+                        )}' used within content type '${colors.yellow(selectedContentType)}'`
+                    );
+                }
+
+                taxonomiesToImport.push(embeddedTaxonomy);
+            }
+        }
     }
 
     for (const selectedContentTypeSnippet of data.selectedContentTypeSnippets) {
@@ -257,6 +292,26 @@ export function filterSelectedObjectsToImport(data: {
         }
 
         contentTypeSnippetsToImport.push(exportContentTypeSnippet);
+
+        // when selected content type snippet is used, also import all used taxonomies
+        for (const element of exportContentTypeSnippet.elements) {
+            if (element.type === 'taxonomy') {
+                const taxonomyElement = element as ContentTypeElements.ITaxonomyElement;
+                const embeddedTaxonomy = data.exportJson.taxonomies?.find(
+                    (m) => m.externalId?.toLowerCase() === taxonomyElement.taxonomy_group.external_id?.toLowerCase()
+                );
+
+                if (!embeddedTaxonomy) {
+                    throw Error(
+                        `Invalid taxonomy with external id '${colors.yellow(
+                            taxonomyElement.taxonomy_group.external_id ?? ''
+                        )}' used within snippet '${colors.yellow(exportContentTypeSnippet.codename)}'`
+                    );
+                }
+
+                taxonomiesToImport.push(embeddedTaxonomy);
+            }
+        }
     }
 
     for (const selectedTaxonomy of data.selectedTaxonomies) {
