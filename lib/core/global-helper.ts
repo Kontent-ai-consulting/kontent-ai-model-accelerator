@@ -219,7 +219,9 @@ export function filterSelectedObjectsToImport(data: {
     exportJson: IExportJson;
 }): IFilteredSelectedObjects {
     const importAll: boolean =
-        !data.selectedContentTypeSnippets.length && !data.selectedContentTypes && !data.selectedTaxonomies;
+        !data.selectedContentTypeSnippets.length &&
+        !data.selectedContentTypes.length &&
+        !data.selectedTaxonomies.length;
 
     if (importAll) {
         return {
