@@ -6,8 +6,7 @@
 
 # Getting started
 
-We recommend running data-ops with `npx`. Use `--help` anytime to get information about available commands and their
-options.
+We recommend running @kontent-ai-consulting/content-model-accelerator with `npx`. Use `--help` anytime to get information about available commands and their options.
 
 ```bash
 npx @kontent-ai-consulting/content-model-accelerator --help
