@@ -1,7 +1,7 @@
 import { HttpService } from '@kontent-ai/core-sdk';
 import { IRetryStrategyOptions } from '@kontent-ai/core-sdk';
 
-export const getAllAcceleratorsUrl: string = `https://learn.devkontentmasters.com/learn/api/accelerators/getAll`;
+export const getAllAcceleratorsUrl: string = `https://kontent.ai/learn/api/accelerators/getAll`;
 export const logAnalyticsEventUrl: string = `https://tools-analytics.azurewebsites.net/api/TrackEvent`;
 const rateExceededErrorCode: number = 10000;
 
