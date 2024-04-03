@@ -1,6 +1,6 @@
 import { IContentTypeSnippetsFormatService } from '../file-processor.models.js';
-import { ContentTypeElements, ContentTypeSnippetModels, ElementContracts } from '@kontent-ai/management-sdk';
-import { IJsonContentTypeElement, IJsonContentTypeSnippet } from '../../core/index.js';
+import { ContentTypeSnippetModels, ElementContracts } from '@kontent-ai/management-sdk';
+import { JsonContentTypeElement, IJsonContentTypeSnippet } from '../../core/index.js';
 
 export class ContentTypeSnippetsJsonProcessorService implements IContentTypeSnippetsFormatService {
     async transformAsync(types: ContentTypeSnippetModels.ContentTypeSnippet[]): Promise<IJsonContentTypeSnippet[]> {
@@ -17,7 +17,7 @@ export class ContentTypeSnippetsJsonProcessorService implements IContentTypeSnip
         return mappedSnippets;
     }
 
-    private getJsonElement(element: ElementContracts.IContentTypeElementContract): IJsonContentTypeElement {
-        return element as ContentTypeElements.IElementShared;
+    private getJsonElement(element: ElementContracts.IContentTypeElementContract): JsonContentTypeElement {
+        return element as JsonContentTypeElement;
     }
 }

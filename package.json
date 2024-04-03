@@ -20,7 +20,7 @@
     "type": "module",
     "directories": {},
     "scripts": {
-        "test": "echo \"no global test configured\"",
+        "test": "npm run build",
         "release": "npm run lint && standard-version && npm run update:version",
         "release:major": "npm run lint && standard-version --release-as major && npm run update:version",
         "release:minor": "npm run lint && standard-version --release-as minor && npm run update:version",
@@ -49,24 +49,24 @@
     "license": "MIT",
     "dependencies": {
         "@kontent-ai-consulting/tools-analytics": "0.0.6",
-        "@kontent-ai/delivery-sdk": "14.7.0",
-        "@kontent-ai/management-sdk": "5.9.0",
+        "@kontent-ai/delivery-sdk": "14.8.0",
+        "@kontent-ai/management-sdk": "6.1.0",
         "colors": "1.4.0",
         "prompts": "2.4.2",
         "yargs": "17.7.2"
     },
     "devDependencies": {
-        "@types/node": "20.11.24",
+        "@types/node": "20.12.3",
         "@types/prompts": "2.4.9",
         "@types/yargs": "17.0.32",
-        "@typescript-eslint/eslint-plugin": "7.1.0",
-        "@typescript-eslint/parser": "7.1.0",
+        "@typescript-eslint/eslint-plugin": "7.5.0",
+        "@typescript-eslint/parser": "7.5.0",
         "dotenv": "16.4.5",
         "eslint": "8.57.0",
         "standard-version": "9.5.0",
         "tsx": "4.7.1",
         "tsconfig-paths": "^4.2.0",
         "tslib": "2.6.2",
-        "typescript": "5.3.3"
+        "typescript": "5.4.3"
     }
 }

@@ -26,14 +26,14 @@ export interface IJsonContentType {
     codename: string;
     name: string;
     contentGroups: IJsonContentTypeGroup[];
-    elements: IJsonContentTypeElement[];
+    elements: JsonContentTypeElement[];
     externalId: string;
 }
 
 export interface IJsonContentTypeSnippet {
     codename: string;
     name: string;
-    elements: IJsonContentTypeElement[];
+    elements: JsonContentTypeElement[];
     externalId: string;
 }
 
@@ -49,5 +49,4 @@ export interface IJsonTaxonomy {
     terms: IJsonTaxonomy[] | undefined;
 }
 
-export interface IJsonContentTypeElement extends ContentTypeElements.IElementShared {}
-
+export type JsonContentTypeElement = ContentTypeElements.Element;
