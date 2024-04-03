@@ -31,14 +31,14 @@
         "build:es2022": "tsc --p tsconfig.es2022.json",
         "build": "npm run clean && npm run build:es2022",
         "test:all": "npm run build",
-        "test:list": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --max-http-header-size=80000000 --action=list ",
-        "test:export": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --max-http-header-size=80000000 --config=export-config.json ",
-        "test:import:file": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --config=import-file-config.json",
-        "test:import:remote": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --config=import-remote-config.json",
-        "test:help": "npm run build && cd output && node --max-http-header-size 150000 ../dist/es2022/node/cli/app --help",
+        "test:list": "cd output && tsx ../lib/node/cli/app --max-http-header-size=80000000 --action=list ",
+        "test:export": "cd output && tsx ../lib/node/cli/app --max-http-header-size=80000000 --config=export-config.json ",
+        "test:import:file": "cd output && tsx ../lib/node/cli/app --config=import-file-config.json",
+        "test:import:remote": "cd output && tsx ../lib/node/cli/app --config=import-remote-config.json",
+        "test:help": "cd output && tsx ../lib/node/cli/app --help",
         "lint": "npx eslint lib",
-        "clean": "node clean.js",
-        "update:version": "ts-node --project tsconfig.script.json ./scripts/version/update-version.ts"
+        "clean": "tsx clean.ts",
+        "update:version": "tsx ./scripts/version/update-version.ts"
     },
     "keywords": [
         "Kontent.ai",
@@ -64,7 +64,7 @@
         "dotenv": "16.4.5",
         "eslint": "8.57.0",
         "standard-version": "9.5.0",
-        "ts-node": "10.9.2",
+        "tsx": "4.7.1",
         "tsconfig-paths": "^4.2.0",
         "tslib": "2.6.2",
         "typescript": "5.3.3"
