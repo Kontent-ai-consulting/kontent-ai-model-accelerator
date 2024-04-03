@@ -272,21 +272,21 @@ const getConfig = async () => {
         model: model,
         baseUrl: baseUrl,
         filename: filename,
-        contentTypes: contentTypesRaw
+        contentTypes: contentTypesRaw?.length
             ? contentTypesRaw
                   .trim()
                   .split(',')
                   .filter((m) => m?.length)
                   .map((m) => m.trim())
             : [],
-        contentTypeSnippets: contentTypeSnippetsRaw
+        contentTypeSnippets: contentTypeSnippetsRaw?.length
             ? contentTypeSnippetsRaw
                   .trim()
                   .split(',')
                   .filter((m) => m?.length)
                   .map((m) => m.trim())
             : [],
-        taxonomies: taxonomiesRaw
+        taxonomies: taxonomiesRaw?.length
             ? taxonomiesRaw
                   .trim()
                   .split(',')
