@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v1.0.2...v1.1.0) (2024-04-03)
+
+
+### Features
+
+* updates deps ([4cc5df9](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/4cc5df9fa99a89f209a4454d66a40c8789acf34f))
+
+
+### Bug Fixes
+
+* fixes raw input validity check for CLI ([e3b7582](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/commit/e3b75822d47564b9b4858cd335b7a4105ee73e69))
+
 ### [1.0.2](https://github.com/Kontent-ai-consulting/kontent-ai-model-accelerator/compare/v1.0.1...v1.0.2) (2024-03-04)
 
 
