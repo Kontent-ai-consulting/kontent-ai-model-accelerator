@@ -1,6 +1,6 @@
 
 export const libMetadata = {
 	name: '@kontent-ai-consulting/content-model-accelerator',
-    timestamp: 'Mon, 04 Mar 2024 13:36:28 GMT',
-    version: '1.0.2'
+    timestamp: 'Wed, 03 Apr 2024 13:16:38 GMT',
+    version: '1.1.0'
 };
