@@ -300,6 +300,6 @@ const getConfig = async () => {
 
 run()
     .then((m) => {})
-    .catch(async (error) => {
+    .catch((error) => {
         handleError(error);
     });
