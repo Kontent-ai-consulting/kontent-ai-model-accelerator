@@ -1,8 +1,6 @@
 import { IManagementClient, EnvironmentModels, SharedModels, ContentTypeElements } from '@kontent-ai/management-sdk';
 import colors from 'colors';
-
 import { Log, exitProcess, logErrorAndExit } from './log-helper.js';
-
 import { DeliveryError } from '@kontent-ai/delivery-sdk';
 import prompts from 'prompts';
 import { ImportService } from '../import/index.js';

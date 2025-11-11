@@ -48,26 +48,24 @@
     ],
     "license": "MIT",
     "dependencies": {
-        "@kontent-ai-consulting/tools-analytics": "0.0.8",
-        "@kontent-ai/delivery-sdk": "16.0.0",
-        "@kontent-ai/management-sdk": "7.7.0",
+        "@kontent-ai-consulting/tools-analytics": "0.0.9",
+        "@kontent-ai/delivery-sdk": "16.4.0",
+        "@kontent-ai/management-sdk": "8.0.0",
         "colors": "1.4.0",
         "prompts": "2.4.2",
-        "yargs": "17.7.2"
+        "yargs": "18.0.0"
     },
     "devDependencies": {
-        "@types/node": "22.13.10",
+        "@types/node": "24.10.0",
         "@types/prompts": "2.4.9",
-        "@types/yargs": "17.0.33",
-        "typescript-eslint": "8.26.1",
-        "@typescript-eslint/eslint-plugin": "8.26.1",
-        "@typescript-eslint/parser": "8.26.1",
-        "dotenv": "16.4.7",
-        "eslint": "9.22.0",
+        "@types/yargs": "17.0.34",
+        "typescript-eslint": "8.46.4",
+        "dotenv": "17.2.3",
+        "eslint": "9.39.1",
         "standard-version": "9.5.0",
-        "tsx": "4.19.3",
+        "tsx": "4.20.6",
         "tsconfig-paths": "^4.2.0",
         "tslib": "2.8.1",
-        "typescript": "5.8.2"
+        "typescript": "5.9.3"
     }
 }
